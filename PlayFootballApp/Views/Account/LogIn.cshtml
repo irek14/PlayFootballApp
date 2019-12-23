@@ -1,0 +1,42 @@
+﻿@model PlayFootballApp.BusinessLogic.Models.Account.LoginModel
+
+@{
+    ViewData["Title"] = "Login";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class=" col-md-6 offset-sm-0 offset-md-3">
+        <div class="ibox">
+            <div class="ibox-title">
+                <h1>Zaloguj się</h1>
+            </div>
+            <div class="ibox-content">
+                @Html.ValidationSummary(true, "", new { @class = " alert alert-danger", role = "alert" })
+                <form role="form" method="post">
+                    @Html.AntiForgeryToken()
+                    <div class="form-group">
+                        <label asp-for="Username" class="control-label"></label>
+                        <input asp-for="Username" class="form-control" />
+                        <span asp-validation-for="Username" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Password" class="control-label"></label>
+                        <input asp-for="Password" class="form-control" />
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+
+                    <div class="clearfix">
+                        <button class="btn btn-lg btn-primary float-right mt-sm-2" type="submit">
+                            <strong>Zaloguj</strong>
+                        </button>
+                        <a class="btn btn-lg btn-info float-right mt-sm-2" asp-action="Register">
+                            <strong>Zarejestruj się</strong>
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
