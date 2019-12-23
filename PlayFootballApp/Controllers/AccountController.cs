@@ -20,6 +20,14 @@ namespace PlayFootballApp.WWW.Controllers
             _userService = userService;
         }
 
+        public async Task<IActionResult> Logout()
+        {
+            if (User.Identity.IsAuthenticated)
+                await _userService.LogOut();
+
+            return RedirectToAction("Index", "Home");
+        }
+
         [AllowAnonymous]
         public ActionResult LogIn()
         {

@@ -12,5 +12,7 @@ namespace PlayFootballApp.BusinessLogic.Interfaces
         Task<IdentityResult> AddUser(RegisterViewModel user);
 
         Task<bool> LogIn(LoginModel loginModel);
+
+        Task LogOut();
     }
 }

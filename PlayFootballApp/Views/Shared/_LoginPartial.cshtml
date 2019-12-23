@@ -1,0 +1,18 @@
+﻿@using Microsoft.AspNetCore.Identity
+
+@if (User.Identity.IsAuthenticated)
+{
+    <form asp-area="" asp-controller="Account" asp-action="LogOut" method="post" id="logoutForm" class="navbar-right">
+        <ul class="nav navbar-top-links navbar-right float-right">
+            <li role="presentation" class="dropdown-item">
+                <a style="position:absolute; right:0" class="nav-link" href="@Url.Action("LogOut","Account")">Wyloguj się</a>
+            </li>
+        </ul>
+    </form>
+}
+else
+{
+    <ul class="nav navbar-top-links navbar-right">
+        <li style="position:absolute; right:0" class="pull-right"><a asp-controller="Account" asp-action="Login">Zaloguj</a></li>
+    </ul>
+}

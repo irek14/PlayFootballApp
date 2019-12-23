@@ -61,6 +61,11 @@ namespace PlayFootballApp.BusinessLogic.Services
 
             return false;
         }
+
+        public async Task LogOut()
+        {
+            await _signInManager.SignOutAsync();
+        }
     }
 
 
