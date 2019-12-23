@@ -1,0 +1,54 @@
+﻿@model PlayFootballApp.BusinessLogic.Models.Account.RegisterViewModel
+
+@{
+    ViewData["Title"] = "Rejestracja";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="ibox mt-5 col-md-4 offset-md-4">
+    <div class="ibox-title">
+        <h2>Rejestracja</h2>
+    </div>
+    <div class="ibox-content">
+        <div class="">
+            <div class="">
+                <form asp-action="Register" method="post">
+                    @Html.AntiForgeryToken()
+                    <div class="form-group">
+                        <label asp-for="Email" class="control-label"></label>
+                        <input asp-for="Email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="FirstName" class="control-label"></label>
+                        <input asp-for="FirstName" class="form-control" />
+                        <span asp-validation-for="FirstName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="LastName" class="control-label"></label>
+                        <input asp-for="LastName" class="form-control" />
+                        <span asp-validation-for="LastName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Password" class="control-label"></label>
+                        <input asp-for="Password" class="form-control" />
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="PasswordConfirmation" class="control-label"></label>
+                        <input asp-for="PasswordConfirmation" class="form-control" />
+                        <span asp-validation-for="PasswordConfirmation" class="text-danger"></span>
+                    </div>
+                    @Html.ValidationSummary(true, "", new { @class = " alert alert-danger", role = "alert" })
+                    <div class="form-group">
+                        <input type="submit" value="Stwórz konto" class="btn btn-primary float-right px-4" />
+                    </div>
+                    <br>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+

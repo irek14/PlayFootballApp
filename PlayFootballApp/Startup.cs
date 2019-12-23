@@ -13,6 +13,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using PlayFootballApp.DataAccess;
 using PlayFootballApp.BuisnessEntities.Entities;
+using PlayFootballApp.BusinessLogic.Services;
+using PlayFootballApp.BusinessLogic.Interfaces;
 
 namespace PlayFootballApp
 {
@@ -38,6 +40,8 @@ namespace PlayFootballApp
 
             services.AddControllersWithViews();
             services.AddRazorPages();
+
+            services.AddScoped<IUserService, UserService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
