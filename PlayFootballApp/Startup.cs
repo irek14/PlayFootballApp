@@ -12,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using PlayFootballApp.DataAccess;
+using PlayFootballApp.BuisnessEntities.Entities;
 
 namespace PlayFootballApp
 {
@@ -30,10 +31,11 @@ namespace PlayFootballApp
             services.AddDbContext<PlayFootballContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
-            
-                //services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-            //    .AddEntityFrameworkStores<ApplicationDbContext>();
-            
+
+            services.AddIdentity<ApplicationUser, ApplicationRole>()
+                      .AddEntityFrameworkStores<PlayFootballContext>()
+                      .AddDefaultTokenProviders();
+
             services.AddControllersWithViews();
             services.AddRazorPages();
         }
