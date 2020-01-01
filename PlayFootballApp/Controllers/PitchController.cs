@@ -18,6 +18,11 @@ namespace PlayFootballApp.WWW.Controllers
         [HttpPost]
         public IActionResult Create(PitchCreateViewModel pitch)
         {
+            if(!ModelState.IsValid)
+            {
+                return View(pitch);
+            }
+
             return Ok();
         }
     }

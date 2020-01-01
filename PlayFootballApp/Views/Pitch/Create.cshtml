@@ -84,6 +84,8 @@
     var marker;
 
     $(document).ready(function () {
+        console.log("DUPA!!!!")
+
         L.Map.addInitHook(function () {
             mapsPlaceholder.push(this); // Use whatever global scope variable you like.
         });
@@ -112,7 +114,46 @@
 
         $('#cancelButton').click(function () {
             document.location = '@Url.Action("Index","Home")';
-    });
+        });
+
+        if ($("#localisationX").val() != undefined) {
+            var locX = $("#localisationX").val() + "";
+            var locY = $("#localisationY").val() + "";
+            locX = locX.replace(",", ".");
+            locY = locY.replace(",", ".");
+            var latlng = L.latLng(locX, locY);
+            marker = L.marker(latlng).addTo(mymap);
+            mapsPlaceholder.push(mymap);
+            $("#submit-button").prop('disabled', false);
+        }
+
+        if ($("#weekDaysInput").val() != undefined) {
+            var weekDays = $("#weekDaysInput").val().split(";");
+            var startHours = $("#startHoursInput").val().split(";");
+            var endHours = $("#endHoursInput").val().split(";");
+            console.log(weekDays);
+            console.log(startHours);
+
+            for (var i = 0; i < weekDays.length-1; i++) {
+                var tableRef = document.getElementById('HoursTable').getElementsByTagName('tbody')[0];
+
+                // Insert a row in the table at the last row
+                var newRow = tableRef.insertRow();
+
+                // Insert a cell in the row at index 0
+                var newCell0 = newRow.insertCell(0);
+                var newCell1 = newRow.insertCell(1);
+                var newCell2 = newRow.insertCell(2);
+
+                // Append a text node to the cell
+                console.log($("#weekDaySelect"));
+
+                $("#weekDaySelect").val(weekDays[i]);
+                newCell0.appendChild(document.createTextNode($("#weekDaySelect option:selected").text()));
+                newCell1.appendChild(document.createTextNode(startHours[i]));
+                newCell2.appendChild(document.createTextNode(endHours[i]));
+            }
+        }
     });
 
     function onMapClick(e) {
@@ -136,8 +177,10 @@
         var tableRef = document.getElementById('HoursTable').getElementsByTagName('tbody')[0];
         var startHour = $("#startHour").val();
         var endHour = $("#endHour").val();
-        console.log(startHour);
-        console.log(endHour);
+
+        if (endHour < startHour)
+            return
+
         if (startHour == "" || endHour == "")
             return;
 
