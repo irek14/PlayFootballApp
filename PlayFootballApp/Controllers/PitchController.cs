@@ -37,6 +37,10 @@ namespace PlayFootballApp.WWW.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-
+        [HttpGet]
+        public IActionResult Edit()
+        {
+            return View();
+        }
     }
 }

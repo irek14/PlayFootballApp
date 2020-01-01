@@ -116,6 +116,12 @@
             document.location = '@Url.Action("Index","Home")';
         });
 
+         $('.deleteRecordButton').click(function (event) {
+            var rowindex = $(this).closest('tr').index();
+             console.log(rowindex);
+        });
+
+
         if ($("#localisationX").val() != undefined) {
             var locX = $("#localisationX").val() + "";
             var locY = $("#localisationY").val() + "";
@@ -144,6 +150,7 @@
                 var newCell0 = newRow.insertCell(0);
                 var newCell1 = newRow.insertCell(1);
                 var newCell2 = newRow.insertCell(2);
+                var newCell3 = newRow.insertCell(3);
 
                 // Append a text node to the cell
                 console.log($("#weekDaySelect"));
@@ -152,6 +159,12 @@
                 newCell0.appendChild(document.createTextNode($("#weekDaySelect option:selected").text()));
                 newCell1.appendChild(document.createTextNode(startHours[i]));
                 newCell2.appendChild(document.createTextNode(endHours[i]));
+                newCell3.innerHTML = "<button type='button' class='btn btn-danger deleteRecordButton'>Usuń</button>";
+
+                 $('.deleteRecordButton').click(function (event) {
+                    var rowindex = $(this).closest('tr').index();
+                    DeleteRow(rowindex);
+                });
             }
         }
     });
@@ -191,6 +204,7 @@
         var newCell0 = newRow.insertCell(0);
         var newCell1 = newRow.insertCell(1);
         var newCell2 = newRow.insertCell(2);
+        var newCell3 = newRow.insertCell(3);
 
         // Append a text node to the cell
         console.log($("#weekDaySelect"));
@@ -198,9 +212,46 @@
         newCell0.appendChild(document.createTextNode($("#weekDaySelect option:selected").text()));
         newCell1.appendChild(document.createTextNode(startHour));
         newCell2.appendChild(document.createTextNode(endHour));
+        newCell3.innerHTML = "<button type='button' class='btn btn-danger deleteRecordButton'>Usuń</button>";
 
         $("#weekDaysInput").val($("#weekDaysInput").val() + $("#weekDaySelect").val() + ";");
         $("#startHoursInput").val($("#startHoursInput").val() + startHour + ";");
         $("#endHoursInput").val($("#endHoursInput").val() + endHour + ";");
+
+         $('.deleteRecordButton').click(function (event) {
+            var rowindex = $(this).closest('tr').index();
+             DeleteRow(rowindex);
+        });
+    }
+
+    function DeleteRow(index) {
+        if (index == -1)
+            return;
+        debugger;
+        var tableRef = document.getElementById('HoursTable').getElementsByTagName('tbody')[0];
+        tableRef.deleteRow(index);
+
+        var weekDays = $("#weekDaysInput").val().split(";");
+        var startHours = $("#startHoursInput").val().split(";");
+        var endHours = $("#endHoursInput").val().split(";");
+
+        weekDays.splice(index, 1);
+        startHours.splice(index, 1);
+        endHours.splice(index, 1);
+
+        var newDays = "";
+        var newStart = "";
+        var newEnd = "";
+
+        for (var i = 0; i < weekDays.length - 1; i++)
+        {
+            newDays += weekDays[i] + ";";
+            newStart += startHours[i] + ";";
+            newEnd += endHours[i] + ";";
+        }
+
+        $("#weekDaysInput").val(newDays);
+        $("#startHoursInput").val(newStart);
+        $("#endHoursInput").val(newEnd);
     }
 </script>
