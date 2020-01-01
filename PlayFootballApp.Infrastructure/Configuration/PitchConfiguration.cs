@@ -19,7 +19,7 @@ namespace PlayFootballApp.DataAccess.Configuration
 
             builder.Property(e => e.Name)
                 .IsRequired()
-                .HasMaxLength(10)
+                .HasMaxLength(255)
                 .IsFixedLength();
 
             builder.Property(e => e.SpotNumber).HasColumnType("numeric(18, 0)");

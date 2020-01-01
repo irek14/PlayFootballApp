@@ -42,6 +42,7 @@ namespace PlayFootballApp
             services.AddRazorPages();
 
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IPitchService, PitchService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
