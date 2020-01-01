@@ -26,7 +26,6 @@ namespace PlayFootballApp.WWW.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(PitchCreateViewModel pitch)
         {
-            //TODO: Consider validation for hours
             if(!ModelState.IsValid)
             {
                 return View(pitch);
@@ -41,6 +40,19 @@ namespace PlayFootballApp.WWW.Controllers
         public IActionResult Edit(Guid id)
         {
             return View(_pitchService.GetPitchWithId(id));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(PitchCreateViewModel pitch)
+        {
+            if(!ModelState.IsValid)
+            {
+                return View(pitch);
+            }
+
+            await _pitchService.UpdatePitch(pitch);
+
+            return RedirectToAction("Index", "Home");
         }
     }
 }

@@ -40,17 +40,28 @@ namespace PlayFootballApp.BusinessLogic.Services
                     string[] startHours = pitch.StartHours.Split(";");
                     string[] endHours = pitch.EndHours.Split(";");
 
+                    var allOpenHours = _context.PitchOpenHours;
+
                     for (int i = 0; i < weekDays.Length - 1; i++)
                     {
-                        PitchOpenHours openHours = new PitchOpenHours()
+                        var record = allOpenHours.Where(x => x.WeekDay == int.Parse(weekDays[i]) && x.EndHour == endHours[i] && x.StartHour == startHours[i]).FirstOrDefault();
+
+                        if (record == null)
                         {
-                            Id = Guid.NewGuid(),
-                            PitchId = newPitch.Id,
-                            WeekDay = int.Parse(weekDays[i]),
-                            EndHour = endHours[i],
-                            StartHour = startHours[i]
-                        };
-                        _context.PitchOpenHours.Add(openHours);
+                            PitchOpenHours openHours = new PitchOpenHours()
+                            {
+                                Id = Guid.NewGuid(),
+                                PitchId = pitch.Id,
+                                WeekDay = int.Parse(weekDays[i]),
+                                EndHour = endHours[i],
+                                StartHour = startHours[i]
+                            };
+                            _context.PitchOpenHours.Add(openHours);
+                        }
+                        else
+                        {
+                            record.IsArchived = false;
+                        }
                     }
 
                     _context.SaveChanges();
@@ -62,7 +73,6 @@ namespace PlayFootballApp.BusinessLogic.Services
                     throw e;
                 }
             }
-
         }
 
         public PitchCreateViewModel GetPitchWithId(Guid id)
@@ -84,6 +94,8 @@ namespace PlayFootballApp.BusinessLogic.Services
                 WeekDays = ""              
             };
 
+            pitch.PitchOpenHours.OrderBy(x=>x.WeekDay);
+
             foreach(var openHour in pitch.PitchOpenHours)
             {
                 result.EndHours += openHour.EndHour + ";";
@@ -92,6 +104,65 @@ namespace PlayFootballApp.BusinessLogic.Services
             }
 
             return result;
+        }
+
+        public async Task UpdatePitch(PitchCreateViewModel pitch)
+        {
+            using (var transaction = await _context.Database.BeginTransactionAsync())
+            {
+                try
+                {
+                    Pitch updatedPitch = _context.Pitch.Where(x => x.Id == pitch.Id).First();
+
+                    updatedPitch.LocalisationX = pitch.LocalisationX;
+                    updatedPitch.LocalisationY = pitch.LocalisationY;
+                    updatedPitch.Name = pitch.Name;
+                    updatedPitch.SpotNumber = pitch.SpotNumber;
+                    _context.Pitch.Update(updatedPitch);
+
+                    string[] weekDays = pitch.WeekDays.Split(";");
+                    string[] startHours = pitch.StartHours.Split(";");
+                    string[] endHours = pitch.EndHours.Split(";");
+
+                    var allOpenHours = _context.PitchOpenHours;
+                    var oldRecords = _context.PitchOpenHours.Where(x => x.PitchId == pitch.Id);
+                    foreach(var record in oldRecords)
+                    {
+                        record.IsArchived = true;
+                    }
+
+                    for (int i = 0; i < weekDays.Length - 1; i++)
+                    {
+                        var record = allOpenHours.Where(x => x.WeekDay == int.Parse(weekDays[i]) && x.EndHour == endHours[i] && x.StartHour == startHours[i]).FirstOrDefault();
+
+                        if(record == null)
+                        {
+                            PitchOpenHours openHours = new PitchOpenHours()
+                            {
+                                Id = Guid.NewGuid(),
+                                PitchId = pitch.Id,
+                                WeekDay = int.Parse(weekDays[i]),
+                                EndHour = endHours[i],
+                                StartHour = startHours[i]
+                            };
+                            _context.PitchOpenHours.Add(openHours);
+                        }
+                        else
+                        {
+                            record.IsArchived = false;
+                        }
+
+                    }
+
+                    _context.SaveChanges();
+
+                    transaction.Commit();
+                }
+                catch (Exception e)
+                {
+                    throw e;
+                }
+            }
         }
     }
 }
