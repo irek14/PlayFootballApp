@@ -17,7 +17,6 @@ namespace PlayFootballApp.DataAccess
         {
         }
 
-        public virtual DbSet<OpenHour> OpenHour { get; set; }
         public virtual DbSet<Pitch> Pitch { get; set; }
         public virtual DbSet<PitchAvailability> PitchAvailability { get; set; }
         public virtual DbSet<PitchOpenHours> PitchOpenHours { get; set; }
@@ -28,7 +27,6 @@ namespace PlayFootballApp.DataAccess
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.ApplyConfiguration(new OpenHourConfiguration());
             modelBuilder.ApplyConfiguration(new PitchAvailabilityConfiguration());
             modelBuilder.ApplyConfiguration(new PitchConfiguration());
             modelBuilder.ApplyConfiguration(new PitchOpenHoursConfiguration());

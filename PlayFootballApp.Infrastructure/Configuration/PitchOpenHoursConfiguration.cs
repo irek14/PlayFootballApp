@@ -13,11 +13,11 @@ namespace PlayFootballApp.DataAccess.Configuration
         {
             builder.Property(e => e.Id).ValueGeneratedNever();
 
-            builder.HasOne(d => d.OpenHour)
-                .WithMany(p => p.PitchOpenHours)
-                .HasForeignKey(d => d.OpenHourId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_PitchOpenHours_OpenHour");
+            builder.Property(e => e.StartHour)
+                .HasMaxLength(8);
+
+            builder.Property(e => e.EndHour)
+                .HasMaxLength(8);
 
             builder.HasOne(d => d.Pitch)
                 .WithMany(p => p.PitchOpenHours)
