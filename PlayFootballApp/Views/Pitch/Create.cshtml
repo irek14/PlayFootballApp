@@ -1,0 +1,95 @@
+﻿@model PlayFootballApp.BusinessLogic.Models.Pitch.PitchCreateViewModel
+
+@{
+    ViewData["Title"] = "Stwórz boisko";
+    Layout = "/Views/Shared/_Layout.cshtml";
+}
+
+<div class="text-center">
+    <h1>Wprowadź dane nowej paczki</h1>
+    <form method="post">
+        <div class="row mt-5">
+            <div class="col-6">
+                <div id="details-div">
+                    <div class="form-group col-md-12 row">
+                        <label asp-for="Name" class="control-label"></label>
+                        <input asp-for="Name" id="name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group col-md-12 row">
+                        <label asp-for="SpotNumber" class="control-label"></label>
+                        <input asp-for="SpotNumber" id="weight" class="form-control" />
+                        <span asp-validation-for="SpotNumber" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group col-md-12 row pull-right">
+                        <div class="col-6"></div>
+                        <button type="button" id="cancelButton" asp-route="Pitch/Index" class="btn btn-secondary m-1 mt-3">Anuluj</button>
+                        <button type="submit" disabled id="submit-button" class="btn btn-primary m-1 mt-3">Zatwierdź</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <label>Lokalizacja</label>
+                <div id="mapid"></div>
+                <input asp-for="LocalisationX" id="localisationX" type="hidden" />
+                <input asp-for="LocalisationY" id="localisationY" type="hidden" />
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    var mapsPlaceholder = [];
+    var marker;
+
+    $(document).ready(function () {
+        L.Map.addInitHook(function () {
+            mapsPlaceholder.push(this); // Use whatever global scope variable you like.
+        });
+
+        var mymap = L.map('mapid').setView([52.222, 21.007], 12);
+
+        L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+            maxZoom: 18,
+            id: 'mapbox.streets',
+            accessToken: 'pk.eyJ1IjoiaXJla2lzIiwiYSI6ImNrMnAyNmZhdjAyc2gzbXBsczJwMmlrNWgifQ.YUpHsfR2Kyp-K8cJD6rRHw'
+        }).addTo(mymap);
+
+        mymap.addControl( new L.Control.Search({
+		    url: 'https://nominatim.openstreetmap.org/search?format=json&q={s}',
+		    jsonpParam: 'json_callback',
+		    propertyName: 'display_name',
+		    propertyLoc: ['lat','lon'],
+		    marker: L.circleMarker([0,0],{radius:30}),
+		    autoCollapse: true,
+		    autoType: false,
+		    minLength: 2,
+	    }) );
+
+        mymap.on('click', onMapClick);
+
+        $('#cancelButton').click(function () {
+            document.location = '@Url.Action("Index","Home")';
+    });
+    });
+
+    function onMapClick(e) {
+        var mymap = mapsPlaceholder.pop();
+        if (marker != undefined)
+            mymap.removeLayer(marker);
+
+        var locX = e.latlng.lat + "";
+        locX = locX.replace(".", ",");
+        var locY = e.latlng.lng + "";
+        locY = locY.replace(".", ",");
+
+        $("#localisationX").val(locX);
+        $("#localisationY").val(locY);
+        $("#submit-button").prop('disabled', false);
+        marker = L.marker(e.latlng).addTo(mymap);
+        mapsPlaceholder.push(mymap);
+    }
+</script>
