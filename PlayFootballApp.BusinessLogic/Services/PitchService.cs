@@ -75,6 +75,31 @@ namespace PlayFootballApp.BusinessLogic.Services
             }
         }
 
+        public void DeletePitch(Guid pitchId)
+        {
+            Pitch pitch = _context.Pitch.Where(x => x.Id == pitchId).FirstOrDefault();
+
+            if (pitch == null)
+                return;
+
+            pitch.IsArchived = true;
+            _context.SaveChanges();
+        }
+
+        public List<TablePitchViewModel> GetAllPitches()
+        {
+            return (from pitch in _context.Pitch
+                    where !pitch.IsArchived
+                    select new TablePitchViewModel()
+                    {
+                        Id = pitch.Id,
+                        LocalisationX = pitch.LocalisationX,
+                        LocalisationY = pitch.LocalisationY,
+                        Name = pitch.Name,
+                        SpotNumber = (int)pitch.SpotNumber
+                    }).ToList();
+        }
+
         public PitchCreateViewModel GetPitchWithId(Guid id)
         {
             Pitch pitch = _context.Pitch.Where(x => x.Id == id).Include(x=>x.PitchOpenHours).FirstOrDefault();

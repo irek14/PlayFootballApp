@@ -18,6 +18,12 @@ namespace PlayFootballApp.WWW.Controllers
         }
 
         [HttpGet]
+        public IActionResult Index()
+        {
+            return View(_pitchService.GetAllPitches());
+        }
+
+        [HttpGet]
         public IActionResult Create()
         {
             return View(new PitchCreateViewModel());
@@ -33,7 +39,7 @@ namespace PlayFootballApp.WWW.Controllers
 
             await _pitchService.AddPitch(pitch);
 
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Pitch");
         }
 
         [HttpGet]
@@ -52,7 +58,15 @@ namespace PlayFootballApp.WWW.Controllers
 
             await _pitchService.UpdatePitch(pitch);
 
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Pitch");
+        }
+
+        [HttpPost]
+        public IActionResult Delete(Guid id)
+        {
+            _pitchService.DeletePitch(id);
+
+            return RedirectToAction("Index", "Pitch");
         }
     }
 }

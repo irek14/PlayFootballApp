@@ -17,6 +17,7 @@ namespace PlayFootballApp.BuisnessEntities.Entities
         public decimal SpotNumber { get; set; }
         public string Name { get; set; }
         public Guid? OpenHoursId { get; set; }
+        public bool IsArchived { get; set; }
 
         public virtual ICollection<PitchAvailability> PitchAvailability { get; set; }
         public virtual ICollection<PitchOpenHours> PitchOpenHours { get; set; }
