@@ -31,13 +31,13 @@
                 <div class="col-md-3 form-group">
                     <label>Dzień tygodnia</label>
                     <select class="form-control" id="weekDaySelect" form="carform">
-                        <option value="monday">Poniedziałek</option>
-                        <option value="tuesday">Wtorek</option>
-                        <option value="wednesday">Środa</option>
-                        <option value="thursday">Czwartek</option>
-                        <option value="friday">Piątek</option>
-                        <option value="saturday">Sobota</option>
-                        <option value="sunday">Niedziela</option>
+                        <option value="1">Poniedziałek</option>
+                        <option value="2">Wtorek</option>
+                        <option value="3">Środa</option>
+                        <option value="4">Czwartek</option>
+                        <option value="5">Piątek</option>
+                        <option value="6">Sobota</option>
+                        <option value="7">Niedziela</option>
                     </select>
                 </div>
                 <div class="col-md-3 form-group">
@@ -47,7 +47,7 @@
                 <div class="col-md-3 form-group">
                     <label>Godzina zakończenia</label>
                     <input class="form-control" id="endHour" type="time" />
-                </div> 
+                </div>
                 <div class="col-md-3">
                     <button onclick="AddHour()" type="button" class="btn btn-warning m-1 mt-3">Dodaj godzinę</button>
                 </div>
@@ -65,6 +65,9 @@
                 <tbody>
                 </tbody>
             </table>
+            <input asp-for="WeekDays" id="weekDaysInput" type="hidden" />
+            <input asp-for="StartHours" id="startHoursInput" type="hidden" />
+            <input asp-for="EndHours" id="endHoursInput" type="hidden" />
 
             <div class="form-group col-md-12 row pull-right">
                 <div class="col-6"></div>
@@ -152,5 +155,9 @@
         newCell0.appendChild(document.createTextNode($("#weekDaySelect option:selected").text()));
         newCell1.appendChild(document.createTextNode(startHour));
         newCell2.appendChild(document.createTextNode(endHour));
+
+        $("#weekDaysInput").val($("#weekDaysInput").val() + $("#weekDaySelect").val() + ";");
+        $("#startHoursInput").val($("#startHoursInput").val() + startHour + ";");
+        $("#endHoursInput").val($("#endHoursInput").val() + endHour + ";");
     }
 </script>

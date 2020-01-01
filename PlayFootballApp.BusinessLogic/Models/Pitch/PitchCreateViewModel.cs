@@ -21,6 +21,9 @@ namespace PlayFootballApp.BusinessLogic.Models.Pitch
         public decimal LocalisationX { get; set; }
         public decimal LocalisationY { get; set; }
 
-        public bool[] OpenHours { get; set; } = new bool[5];
+        public string WeekDays { get; set; }
+        public string StartHours { get; set; }
+        public string EndHours { get; set; }
+
     }
 }
