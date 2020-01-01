@@ -6,36 +6,72 @@
 }
 
 <div class="text-center">
-    <h1>Wprowadź dane nowej paczki</h1>
+    <h1>Wprowadź nowe boisko</h1>
     <form method="post">
-        <div class="row mt-5">
-            <div class="col-6">
-                <div id="details-div">
-                    <div class="form-group col-md-12 row">
-                        <label asp-for="Name" class="control-label"></label>
-                        <input asp-for="Name" id="name" class="form-control" />
-                        <span asp-validation-for="Name" class="text-danger"></span>
-                    </div>
+        <div id="details-div">
 
-                    <div class="form-group col-md-12 row">
-                        <label asp-for="SpotNumber" class="control-label"></label>
-                        <input asp-for="SpotNumber" id="weight" class="form-control" />
-                        <span asp-validation-for="SpotNumber" class="text-danger"></span>
-                    </div>
+            <label>Lokalizacja</label>
+            <div id="mapid"></div>
+            <input asp-for="LocalisationX" id="localisationX" type="hidden" />
+            <input asp-for="LocalisationY" id="localisationY" type="hidden" />
 
-                    <div class="form-group col-md-12 row pull-right">
-                        <div class="col-6"></div>
-                        <button type="button" id="cancelButton" asp-route="Pitch/Index" class="btn btn-secondary m-1 mt-3">Anuluj</button>
-                        <button type="submit" disabled id="submit-button" class="btn btn-primary m-1 mt-3">Zatwierdź</button>
-                    </div>
+            <div class="form-group col-md-12 row">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" id="name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="form-group col-md-12 row">
+                <label asp-for="SpotNumber" class="control-label"></label>
+                <input asp-for="SpotNumber" id="weight" class="form-control" />
+                <span asp-validation-for="SpotNumber" class="text-danger"></span>
+            </div>
+
+            <div class="form-group col-md-12 row">
+                <div class="col-md-3 form-group">
+                    <label>Dzień tygodnia</label>
+                    <select class="form-control" id="weekDaySelect" form="carform">
+                        <option value="monday">Poniedziałek</option>
+                        <option value="tuesday">Wtorek</option>
+                        <option value="wednesday">Środa</option>
+                        <option value="thursday">Czwartek</option>
+                        <option value="friday">Piątek</option>
+                        <option value="saturday">Sobota</option>
+                        <option value="sunday">Niedziela</option>
+                    </select>
+                </div>
+                <div class="col-md-3 form-group">
+                    <label>Godzina rozpoczęcia</label>
+                    <input class="form-control" id="startHour" type="time" />
+                </div>
+                <div class="col-md-3 form-group">
+                    <label>Godzina zakończenia</label>
+                    <input class="form-control" id="endHour" type="time" />
+                </div> 
+                <div class="col-md-3">
+                    <button onclick="AddHour()" type="button" class="btn btn-warning m-1 mt-3">Dodaj godzinę</button>
                 </div>
             </div>
-            <div class="col-6">
-                <label>Lokalizacja</label>
-                <div id="mapid"></div>
-                <input asp-for="LocalisationX" id="localisationX" type="hidden" />
-                <input asp-for="LocalisationY" id="localisationY" type="hidden" />
+
+
+            <table id="HoursTable" class="table table-striped table-dark">
+                <thead>
+                    <tr>
+                        <th scope="col">Dzień tygodnia</th>
+                        <th scope="col">Rozpoczęcie</th>
+                        <th scope="col">Zakończenie</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+
+            <div class="form-group col-md-12 row pull-right">
+                <div class="col-6"></div>
+                <button type="button" id="cancelButton" asp-route="Pitch/Index" class="btn btn-secondary m-1 mt-3">Anuluj</button>
+                <button type="submit" disabled id="submit-button" class="btn btn-primary m-1 mt-3">Dodaj boisko</button>
             </div>
+
         </div>
     </form>
 </div>
@@ -91,5 +127,30 @@
         $("#submit-button").prop('disabled', false);
         marker = L.marker(e.latlng).addTo(mymap);
         mapsPlaceholder.push(mymap);
+    }
+
+    function AddHour() {
+        var tableRef = document.getElementById('HoursTable').getElementsByTagName('tbody')[0];
+        var startHour = $("#startHour").val();
+        var endHour = $("#endHour").val();
+        console.log(startHour);
+        console.log(endHour);
+        if (startHour == "" || endHour == "")
+            return;
+
+        // Insert a row in the table at the last row
+        var newRow = tableRef.insertRow();
+
+        // Insert a cell in the row at index 0
+        var newCell0 = newRow.insertCell(0);
+        var newCell1 = newRow.insertCell(1);
+        var newCell2 = newRow.insertCell(2);
+
+        // Append a text node to the cell
+        console.log($("#weekDaySelect"));
+
+        newCell0.appendChild(document.createTextNode($("#weekDaySelect option:selected").text()));
+        newCell1.appendChild(document.createTextNode(startHour));
+        newCell2.appendChild(document.createTextNode(endHour));
     }
 </script>

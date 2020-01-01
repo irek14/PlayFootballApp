@@ -14,5 +14,11 @@ namespace PlayFootballApp.WWW.Controllers
         {
             return View(new PitchCreateViewModel());
         }
+
+        [HttpPost]
+        public IActionResult Create(PitchCreateViewModel pitch)
+        {
+            return Ok();
+        }
     }
 }

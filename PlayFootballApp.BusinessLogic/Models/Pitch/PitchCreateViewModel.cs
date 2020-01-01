@@ -20,5 +20,7 @@ namespace PlayFootballApp.BusinessLogic.Models.Pitch
 
         public decimal LocalisationX { get; set; }
         public decimal LocalisationY { get; set; }
+
+        public bool[] OpenHours { get; set; } = new bool[5];
     }
 }
