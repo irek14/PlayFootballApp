@@ -44,14 +44,14 @@ namespace PlayFootballApp.BusinessLogic.Services
 
                     for (int i = 0; i < weekDays.Length - 1; i++)
                     {
-                        var record = allOpenHours.Where(x => x.WeekDay == int.Parse(weekDays[i]) && x.EndHour == endHours[i] && x.StartHour == startHours[i]).FirstOrDefault();
+                        var record = allOpenHours.Where(x => x.Id == newPitch.Id && x.WeekDay == int.Parse(weekDays[i]) && x.EndHour == endHours[i] && x.StartHour == startHours[i]).FirstOrDefault();
 
                         if (record == null)
                         {
                             PitchOpenHours openHours = new PitchOpenHours()
                             {
                                 Id = Guid.NewGuid(),
-                                PitchId = pitch.Id,
+                                PitchId = newPitch.Id,
                                 WeekDay = int.Parse(weekDays[i]),
                                 EndHour = endHours[i],
                                 StartHour = startHours[i]
@@ -119,9 +119,9 @@ namespace PlayFootballApp.BusinessLogic.Services
                 WeekDays = ""              
             };
 
-            pitch.PitchOpenHours.OrderBy(x=>x.WeekDay);
+            var openHours = pitch.PitchOpenHours.OrderBy(x=>((int)x.WeekDay)).ThenBy(x=>x.StartHour);
 
-            foreach(var openHour in pitch.PitchOpenHours)
+            foreach(var openHour in openHours)
             {
                 result.EndHours += openHour.EndHour + ";";
                 result.StartHours += openHour.StartHour + ";";
@@ -158,7 +158,7 @@ namespace PlayFootballApp.BusinessLogic.Services
 
                     for (int i = 0; i < weekDays.Length - 1; i++)
                     {
-                        var record = allOpenHours.Where(x => x.WeekDay == int.Parse(weekDays[i]) && x.EndHour == endHours[i] && x.StartHour == startHours[i]).FirstOrDefault();
+                        var record = allOpenHours.Where(x => x.Id == updatedPitch.Id && x.WeekDay == int.Parse(weekDays[i]) && x.EndHour == endHours[i] && x.StartHour == startHours[i]).FirstOrDefault();
 
                         if(record == null)
                         {

@@ -68,5 +68,11 @@ namespace PlayFootballApp.WWW.Controllers
 
             return RedirectToAction("Index", "Pitch");
         }
+
+        [HttpPost]
+        public IActionResult Details(Guid id)
+        {
+            return View(_pitchService.GetPitchWithId(id));
+        }
     }
 }
