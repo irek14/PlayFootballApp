@@ -38,9 +38,9 @@ namespace PlayFootballApp.WWW.Controllers
         }
 
         [HttpGet]
-        public IActionResult Edit()
+        public IActionResult Edit(Guid id)
         {
-            return View();
+            return View(_pitchService.GetPitchWithId(id));
         }
     }
 }

@@ -1,14 +1,13 @@
 ﻿@model PlayFootballApp.BusinessLogic.Models.Pitch.PitchCreateViewModel
-
 @{
-    ViewData["Title"] = "Stwórz boisko";
-    Layout = "/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Edytuj boisko";
 }
 
 <div class="text-center">
-    <h1>Wprowadź nowe boisko</h1>
+    <h1>Edytuj boisko</h1>
     <form method="post">
         <div id="details-div">
+            <input asp-for="Id" type="hidden"/>
 
             <label>Lokalizacja</label>
             <div id="mapid"></div>

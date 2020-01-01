@@ -9,5 +9,6 @@ namespace PlayFootballApp.BusinessLogic.Interfaces
     public interface IPitchService
     {
         Task AddPitch(PitchCreateViewModel pitch);
+        PitchCreateViewModel GetPitchWithId(Guid id);
     }
 }

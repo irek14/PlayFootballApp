@@ -6,6 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace PlayFootballApp.BusinessLogic.Services
 {
@@ -61,6 +63,35 @@ namespace PlayFootballApp.BusinessLogic.Services
                 }
             }
 
+        }
+
+        public PitchCreateViewModel GetPitchWithId(Guid id)
+        {
+            Pitch pitch = _context.Pitch.Where(x => x.Id == id).Include(x=>x.PitchOpenHours).FirstOrDefault();
+
+            if (pitch == null)
+                return null;
+
+            PitchCreateViewModel result = new PitchCreateViewModel()
+            {
+                Id = pitch.Id,
+                LocalisationX = pitch.LocalisationX,
+                LocalisationY = pitch.LocalisationY,
+                Name = pitch.Name,
+                SpotNumber = (int)pitch.SpotNumber,
+                EndHours = "",
+                StartHours = "",
+                WeekDays = ""              
+            };
+
+            foreach(var openHour in pitch.PitchOpenHours)
+            {
+                result.EndHours += openHour.EndHour + ";";
+                result.StartHours += openHour.StartHour + ";";
+                result.WeekDays += ((int)openHour.WeekDay).ToString() + ";";
+            }
+
+            return result;
         }
     }
 }
