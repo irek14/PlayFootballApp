@@ -65,3 +65,15 @@ body {
 .leaflet-control {
     display: none;
 }
+
+@media (min-width: 1350px) {
+    .container {
+        min-width: 1300px;
+    }
+}
+
+@media (min-width: 1540px) {
+    .container {
+        min-width: 1500px;
+    }
+}

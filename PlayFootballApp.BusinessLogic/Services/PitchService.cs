@@ -106,6 +106,7 @@ namespace PlayFootballApp.BusinessLogic.Services
             var result = _context.PitchAvailability.Include(x => x.Pitch).Include(x => x.PitchOpenHours)
                 .Select(x => new PitchAvabilityViewModel()
                 {
+                    Id = x.Id,
                     Date = x.OpenDate,
                     StartHour = x.PitchOpenHours.StartHour,
                     EndHour = x.PitchOpenHours.EndHour,
