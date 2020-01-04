@@ -15,5 +15,6 @@ namespace PlayFootballApp.BusinessLogic.Interfaces
         List<TablePitchViewModel> GetAllPitches();
         void DeletePitch(Guid pitchId);
         List<PitchViewModel> GetPitchAvability();
+        bool ReserveSpot(Guid avabilityId, int spots, Guid userId);
     }
 }

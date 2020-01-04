@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,7 +11,6 @@ using PlayFootballApp.Models;
 
 namespace PlayFootballApp.Controllers
 {
-    [Authorize]
     public class HomeController : Controller
     {
         private readonly IPitchService _pitchService;
@@ -27,6 +27,18 @@ namespace PlayFootballApp.Controllers
         public IActionResult FindEvents()
         {
             return View(_pitchService.GetPitchAvability());
+        }
+
+        [HttpPost]
+        public IActionResult Reserve(Guid id, int spots)
+        {
+            var userId = Guid.Parse(User.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value);
+            bool result = _pitchService.ReserveSpot(id, spots, userId);
+
+            if(result)
+                return Json("Ok");
+
+            return Json("Error");
         }
 
         public IActionResult Privacy()

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PlayFootballApp.DataAccess;
 
 namespace PlayFootballApp.DataAccess.Migrations
 {
     [DbContext(typeof(PlayFootballContext))]
-    partial class PlayFootballContextModelSnapshot : ModelSnapshot
+    [Migration("20200104215921_AddReservedSpotsToSingleReservation")]
+    partial class AddReservedSpotsToSingleReservation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

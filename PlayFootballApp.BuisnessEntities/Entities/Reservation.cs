@@ -9,6 +9,7 @@ namespace PlayFootballApp.BuisnessEntities.Entities
         public Guid? UserId { get; set; }
         public Guid PitchAvailabilityId { get; set; }
         public DateTime Date { get; set; }
+        public int ReservedSpots { get; set; }
 
         public virtual PitchAvailability PitchAvailability { get; set; }
         public virtual ApplicationUser User { get; set; }

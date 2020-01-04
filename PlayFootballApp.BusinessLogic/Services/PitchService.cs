@@ -163,6 +163,34 @@ namespace PlayFootballApp.BusinessLogic.Services
             return result;
         }
 
+        public bool ReserveSpot(Guid avabilityId, int spots, Guid userId)
+        {
+            var avability = _context.PitchAvailability.Where(x => x.Id == avabilityId).FirstOrDefault();
+           
+            if (avability == null)
+                return false;
+
+            var pitch = _context.Pitch.Where(x => x.Id == avability.PitchId).First();
+
+            if (pitch.SpotNumber - avability.ReservedPlaces < spots)
+                return false;
+
+            avability.ReservedPlaces += spots;
+
+            _context.Reservation.Add(new Reservation()
+            {
+                Id = Guid.NewGuid(),
+                PitchAvailabilityId = avability.Id,
+                Date = DateTime.Now,
+                UserId = userId,
+                ReservedSpots = spots
+            });
+
+            _context.SaveChanges();
+
+            return true;
+        }
+
         public async Task UpdatePitch(PitchCreateViewModel pitch)
         {
             using (var transaction = await _context.Database.BeginTransactionAsync())
