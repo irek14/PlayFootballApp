@@ -14,6 +14,7 @@ namespace PlayFootballApp.BuisnessEntities.Entities
         public Guid PitchId { get; set; }
         public Guid PitchOpenHoursId { get; set; }
         public DateTime OpenDate { get; set; }
+        public int ReservedPlaces { get; set; }
 
         public virtual Pitch Pitch { get; set; }
         public virtual PitchOpenHours PitchOpenHours { get; set; }

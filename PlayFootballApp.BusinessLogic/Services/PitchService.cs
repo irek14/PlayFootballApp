@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using PlayFootballApp.BusinessLogic.Models.Home;
 
 namespace PlayFootballApp.BusinessLogic.Services
 {
@@ -98,6 +99,25 @@ namespace PlayFootballApp.BusinessLogic.Services
                         Name = pitch.Name,
                         SpotNumber = (int)pitch.SpotNumber
                     }).ToList();
+        }
+
+        public List<PitchAvabilityViewModel> GetPitchAvability()
+        {
+            var result = _context.PitchAvailability.Include(x => x.Pitch).Include(x => x.PitchOpenHours)
+                .Select(x => new PitchAvabilityViewModel()
+                {
+                    Date = x.OpenDate,
+                    StartHour = x.PitchOpenHours.StartHour,
+                    EndHour = x.PitchOpenHours.EndHour,
+                    PitchName = x.Pitch.Name,
+                    ReservedSpot = x.ReservedPlaces,
+                    Spot = (int)x.Pitch.SpotNumber,
+                    FreeSpot = (int)x.Pitch.SpotNumber - x.ReservedPlaces
+                });
+
+            result = result.OrderBy(x => x.Date).ThenBy(x => x.StartHour).ThenBy(x => x.EndHour);
+
+            return result.ToList();
         }
 
         public PitchCreateViewModel GetPitchWithId(Guid id)

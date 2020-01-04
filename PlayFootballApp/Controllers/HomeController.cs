@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PlayFootballApp.BusinessLogic.Interfaces;
 using PlayFootballApp.Models;
 
 namespace PlayFootballApp.Controllers
@@ -12,9 +13,20 @@ namespace PlayFootballApp.Controllers
     [Authorize]
     public class HomeController : Controller
     {
+        private readonly IPitchService _pitchService;
+        public HomeController(IPitchService pitchService)
+        {
+            _pitchService = pitchService;
+        }
+
         public IActionResult Index()
         {
             return View();
+        }
+
+        public IActionResult FindEvents()
+        {
+            return View(_pitchService.GetPitchAvability());
         }
 
         public IActionResult Privacy()

@@ -1,4 +1,5 @@
-﻿using PlayFootballApp.BusinessLogic.Models.Pitch;
+﻿using PlayFootballApp.BusinessLogic.Models.Home;
+using PlayFootballApp.BusinessLogic.Models.Pitch;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -13,5 +14,6 @@ namespace PlayFootballApp.BusinessLogic.Interfaces
         Task UpdatePitch(PitchCreateViewModel pitch);
         List<TablePitchViewModel> GetAllPitches();
         void DeletePitch(Guid pitchId);
+        List<PitchAvabilityViewModel> GetPitchAvability();
     }
 }
