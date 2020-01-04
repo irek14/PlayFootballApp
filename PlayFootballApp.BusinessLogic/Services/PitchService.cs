@@ -119,7 +119,7 @@ namespace PlayFootballApp.BusinessLogic.Services
                 WeekDays = ""              
             };
 
-            var openHours = pitch.PitchOpenHours.OrderBy(x=>((int)x.WeekDay)).ThenBy(x=>x.StartHour);
+            var openHours = pitch.PitchOpenHours.OrderBy(x=>((int)x.WeekDay)).ThenBy(x=>x.StartHour).Where(x=>!x.IsArchived);
 
             foreach(var openHour in openHours)
             {
@@ -158,7 +158,7 @@ namespace PlayFootballApp.BusinessLogic.Services
 
                     for (int i = 0; i < weekDays.Length - 1; i++)
                     {
-                        var record = allOpenHours.Where(x => x.Id == updatedPitch.Id && x.WeekDay == int.Parse(weekDays[i]) && x.EndHour == endHours[i] && x.StartHour == startHours[i]).FirstOrDefault();
+                        var record = allOpenHours.Where(x => x.PitchId == updatedPitch.Id && x.WeekDay == int.Parse(weekDays[i]) && x.EndHour == endHours[i] && x.StartHour == startHours[i]).FirstOrDefault();
 
                         if(record == null)
                         {

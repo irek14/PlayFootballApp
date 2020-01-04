@@ -1,0 +1,79 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Panel administracyjny</h1>
+<hr/>
+<div class="col-12">
+    <div class="row col-12">
+        <div class="col-4">
+            <h5>Wprowadź nowe wydarzenia</h5>
+        </div>
+        <div class="col-3 row">
+            <label class="col-3">Od:</label>
+            <input class="col-9 form-control" id="startDate" type="date"/>
+        </div>
+        <div class="col-3 row">
+            <label class="col-3">Do:</label>
+            <input class="col-9 form-control" id="endDate" type="date"/>
+        </div>
+        <div class="col-2">
+            <button type="button" class="btn btn-success" onclick="setPitchAvability()">Zatwierdź</button>
+        </div>
+    </div>
+    <hr/>
+</div>
+
+<script>
+    $(document).ready(function () {
+        setDate(true, false, "startDate", new Date());
+        setDate(true, false, "endDate", new Date());
+    });
+
+    function setPitchAvability() {
+        var startDate = $("#startDate").val();
+        var endDate = $("#endDate").val();
+
+        var form = new FormData();
+        form.append("startDate", startDate);
+        form.append("endDate", endDate);
+
+        var settings = {
+          "async": true,
+          "crossDomain": true,
+          "url": "Admin/AddPitchAvability",
+          "method": "POST",
+          "headers": {
+            "cache-control": "no-cache",
+          },
+          "processData": false,
+          "contentType": false,
+          "mimeType": "multipart/form-data",
+          "data": form
+        }
+
+        $.ajax(settings).done(function (response) {
+          console.log(response);
+        });
+    }
+
+    function setDate(min, max, id, date) {
+        var dd = date.getDate();
+        var mm = date.getMonth()+1;
+        var yyyy = date.getFullYear();
+         if(dd<10){
+                dd='0'+dd
+            } 
+            if(mm<10){
+                mm='0'+mm
+            } 
+
+        date = yyyy + '-' + mm + '-' + dd;
+        if(min)
+            document.getElementById(id).setAttribute("min", date);
+        if (max)
+            document.getElementById(id).setAttribute("max", date);
+    }
+
+</script>
