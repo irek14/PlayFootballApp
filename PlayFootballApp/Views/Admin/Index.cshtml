@@ -54,7 +54,12 @@
         }
 
         $.ajax(settings).done(function (response) {
-          console.log(response);
+            if (JSON.parse(response) == "Ok") {
+                alert("Godziny zostały dodane")
+            }
+            else if (JSON.parse(response) == "Error") {
+                alert("Coś poszło nie tak \nSprawdź, czy zostały wprowadzone obie daty i data początkowa jest mniejsza od końcowej")
+            }
         });
     }
 
