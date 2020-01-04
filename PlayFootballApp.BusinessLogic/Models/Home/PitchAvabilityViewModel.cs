@@ -10,6 +10,7 @@ namespace PlayFootballApp.BusinessLogic.Models.Home
         public Guid Id { get; set; }
         [Display(Name = "Nazwa obiektu")]
         public string PitchName { get; set; }
+        public Guid PitchId { get; set; }
         [Display(Name = "Dzień")]
         public DateTime Date { get; set; }
         [Display(Name = "Godzina rozpoczęcia")]

@@ -14,6 +14,6 @@ namespace PlayFootballApp.BusinessLogic.Interfaces
         Task UpdatePitch(PitchCreateViewModel pitch);
         List<TablePitchViewModel> GetAllPitches();
         void DeletePitch(Guid pitchId);
-        List<PitchAvabilityViewModel> GetPitchAvability();
+        List<PitchViewModel> GetPitchAvability();
     }
 }

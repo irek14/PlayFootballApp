@@ -101,24 +101,35 @@ namespace PlayFootballApp.BusinessLogic.Services
                     }).ToList();
         }
 
-        public List<PitchAvabilityViewModel> GetPitchAvability()
+        public List<PitchViewModel> GetPitchAvability()
         {
-            var result = _context.PitchAvailability.Include(x => x.Pitch).Include(x => x.PitchOpenHours)
+            var avability = _context.PitchAvailability.Include(x => x.Pitch).Include(x => x.PitchOpenHours)
                 .Select(x => new PitchAvabilityViewModel()
                 {
                     Id = x.Id,
                     Date = x.OpenDate,
                     StartHour = x.PitchOpenHours.StartHour,
                     EndHour = x.PitchOpenHours.EndHour,
+                    PitchId = x.PitchId,
                     PitchName = x.Pitch.Name,
-                    ReservedSpot = x.ReservedPlaces,
                     Spot = (int)x.Pitch.SpotNumber,
+                    ReservedSpot = x.ReservedPlaces,
                     FreeSpot = (int)x.Pitch.SpotNumber - x.ReservedPlaces
                 });
 
-            result = result.OrderBy(x => x.Date).ThenBy(x => x.StartHour).ThenBy(x => x.EndHour);
+            var pitches = avability.Select(x => new PitchViewModel()
+            {
+                PitchId = x.PitchId,
+                PitchName = x.PitchName,
+                Spot = x.Spot
+            }).Distinct().ToList();
 
-            return result.ToList();
+            for(int i=0; i<pitches.Count(); i++)
+            {
+                pitches[i].PitchAvability = avability.Where(x => x.PitchId == pitches[i].PitchId).ToList();
+            }
+
+            return pitches;
         }
 
         public PitchCreateViewModel GetPitchWithId(Guid id)

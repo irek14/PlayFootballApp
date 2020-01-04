@@ -1,4 +1,4 @@
-﻿@model IEnumerable<PlayFootballApp.BusinessLogic.Models.Home.PitchAvabilityViewModel>
+﻿@model IEnumerable<PlayFootballApp.BusinessLogic.Models.Home.PitchViewModel>
 
 @{
     ViewData["Title"] = "Wydarzenia";
@@ -6,50 +6,84 @@
 
 <h1>Znalezione wydarzenia</h1>
 
-@foreach (var item in Model)
+@foreach (var pitch in Model)
 {
     <table id="HoursTable" class="table table-striped table-dark mt-3 col-12">
         <thead class="col-12">
             <tr class="col-12">
-                <th class="col-4" scope="col">@Html.DisplayNameFor(model => model.PitchName)</th>
-                <th class="col-1" scope="col">@Html.DisplayNameFor(model => model.Date)</th>
-                <th class="col-1" scope="col">@Html.DisplayNameFor(model => model.StartHour)</th>
-                <th class="col-1" scope="col">@Html.DisplayNameFor(model => model.EndHour)</th>
-                <th class="col-1" scope="col">@Html.DisplayNameFor(model => model.ReservedSpot)</th>
-                <th class="col-1" scope="col">@Html.DisplayNameFor(model => model.FreeSpot)</th>
-                <th class="col-1" scope="col">@Html.DisplayNameFor(model => model.Spot)</th>
-                <th class="col-2" scope="col"></th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PitchName)
-                </td>
-                <td>
-                    @item.Date.ToShortDateString()
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.StartHour)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.EndHour)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ReservedSpot)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FreeSpot)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Spot)
-                </td>
-                <td>
-                    <button id="expandButton_@item.Id" type="button" class="btn btn-danger">
+                <th class="col-8" scope="col">@pitch.PitchName</th>
+                <th class="col-2" scope="col">Liczba miejsc: @pitch.Spot</th>
+                <th class="col-2" scope="col">
+                    <button id="showButton_@pitch.PitchId" onclick="ExpandPanel('@pitch.PitchId')" type="button" class="btn btn-success">
                         Pokaż szczegóły <i class="fa fa-arrow-circle-down"></i>
                     </button>
-                </td>
+                    <button style="display:none" id="hideButton_@pitch.PitchId" onclick="HidePanel('@pitch.PitchId')" type="button" class="btn btn-danger">
+                        Ukryj <i class="fa fa-arrow-circle-up"></i>
+                    </button>
+                </th>
             </tr>
-        </tbody>
+        </thead>
     </table>
+    <div id="panel_@pitch.PitchId" class="col-12" style="display:none">
+        <div class="m-0 row col-12">
+            <div class="col-5">
+
+            </div>
+            <table id="HoursTable" class="table col-7">
+                <thead class="col-12">
+                    <tr class="col-12">
+                        <th class="col-3" scope="col">Data</th>
+                        <th class="col-2" scope="col">Godzina rozpoczęcia</th>
+                        <th class="col-2" scope="col">Godzina zakończenia</th>
+                        <th class="col-1" scope="col">Zarezerwowane miejsca</th>
+                        <th class="col-1" scope="col">Wolne miejsca</th>
+                        <th class="col-3" scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var avability in pitch.PitchAvability)
+                    {
+                        <tr>
+                            <td>
+                                @avability.Date.ToShortDateString()
+                            </td>
+                            <td>
+                                @avability.StartHour
+                            </td>
+                            <td>
+                                @avability.EndHour
+                            </td>
+                            <td>
+                                @avability.ReservedSpot
+                            </td>
+                            <td>
+                                @avability.FreeSpot
+                            </td>
+                            <td>
+                                @*<button id="expandButton_@item.Id" type="button" class="btn btn-danger">
+                                Pokaż szczegóły <i class="fa fa-arrow-circle-down"></i>
+                            </button>*@
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+    </div>
 }
+
+<script>
+    function ExpandPanel(id) {
+        document.getElementById("panel_" + id).style.display = "block";
+        document.getElementById("showButton_" + id).style.display = "none";
+        document.getElementById("hideButton_" + id).style.display = "block";
+    }
+
+    function HidePanel(id) {
+        document.getElementById("panel_" + id).style.display = "none";
+        document.getElementById("showButton_" + id).style.display = "block";
+        document.getElementById("hideButton_" + id).style.display = "none";
+    }
+
+</script>
