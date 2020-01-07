@@ -24,9 +24,11 @@ namespace PlayFootballApp.Controllers
             return View();
         }
 
+        [Authorize]
         public IActionResult FindEvents()
         {
-            return View(_pitchService.GetPitchAvability());
+            var userId = Guid.Parse(User.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value);
+            return View(_pitchService.GetPitchAvability(userId));
         }
 
         [HttpPost]
@@ -36,6 +38,18 @@ namespace PlayFootballApp.Controllers
             bool result = _pitchService.ReserveSpot(id, spots, userId);
 
             if(result)
+                return Json("Ok");
+
+            return Json("Error");
+        }
+
+        [HttpPost]
+        public IActionResult Resign(Guid id)
+        {
+            var userId = Guid.Parse(User.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value);
+            bool result = _pitchService.ResignSpot(id, userId);
+
+            if (result)
                 return Json("Ok");
 
             return Json("Error");

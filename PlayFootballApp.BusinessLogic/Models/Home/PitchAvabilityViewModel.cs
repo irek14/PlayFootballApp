@@ -23,5 +23,7 @@ namespace PlayFootballApp.BusinessLogic.Models.Home
         public int ReservedSpot { get; set; }
         [Display(Name = "Wolne miejsce")]
         public int FreeSpot { get; set; }
+
+        public bool IsBookedByMy { get; set; }
     }
 }

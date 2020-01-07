@@ -71,9 +71,18 @@
                                         @avability.FreeSpot
                                     </td>
                                     <td>
-                                        <button onclick="Reserve('@avability.Id','@avability.PitchId')" type="button" class="btn btn-success">
-                                            <i class="fa fa-check-circle"></i> Zarezerwuj
-                                        </button>
+                                        @if (avability.IsBookedByMy)
+                                        {
+                                            <button onclick="Resign('@avability.Id','@avability.PitchId')" type="button" class="btn btn-danger">
+                                                <i class="fa fa-ban"></i> Zrezygnuj
+                                            </button>
+                                        }
+                                        else
+                                        {
+                                            <button onclick="Reserve('@avability.Id')" type="button" class="btn btn-success">
+                                                <i class="fa fa-check-circle"></i> Zarezerwuj
+                                            </button>
+                                        }
                                     </td>
                                 </tr>
                             }
@@ -123,6 +132,36 @@
 
         $.ajax(settings).done(function (response) {
             if (JSON.parse(response) == "Ok") {
+                window.location = "Home/Index"
+            }
+            else if (JSON.parse(response) == "Error") {
+                alert("Coś poszło nie tak");
+                location.reload();
+            }
+        });
+    }
+
+    function Resign(id) {
+        var form = new FormData();
+        form.append("id", id);
+
+        var settings = {
+          "async": true,
+          "crossDomain": true,
+          "url": "Home/Resign",
+          "method": "POST",
+          "headers": {
+            "cache-control": "no-cache",
+          },
+          "processData": false,
+          "contentType": false,
+          "mimeType": "multipart/form-data",
+          "data": form
+        }
+
+        $.ajax(settings).done(function (response) {
+            if (JSON.parse(response) == "Ok") {
+                alert("Miejsca zostały dla Ciebie zarezerwowane");
                 window.location = "Home/Index"
             }
             else if (JSON.parse(response) == "Error") {

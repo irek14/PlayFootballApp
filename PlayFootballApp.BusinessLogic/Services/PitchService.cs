@@ -101,7 +101,7 @@ namespace PlayFootballApp.BusinessLogic.Services
                     }).ToList();
         }
 
-        public List<PitchViewModel> GetPitchAvability()
+        public List<PitchViewModel> GetPitchAvability(Guid userId)
         {
             var avability = _context.PitchAvailability.Include(x => x.Pitch).Include(x => x.PitchOpenHours)
                 .Select(x => new PitchAvabilityViewModel()
@@ -124,9 +124,19 @@ namespace PlayFootballApp.BusinessLogic.Services
                 Spot = x.Spot
             }).Distinct().ToList();
 
+            var myReservation = _context.Reservation.Where(x => x.UserId == userId);
+
             for(int i=0; i<pitches.Count(); i++)
             {
-                pitches[i].PitchAvability = avability.Where(x => x.PitchId == pitches[i].PitchId).ToList();
+                pitches[i].PitchAvability = avability.Where(x => x.PitchId == pitches[i].PitchId).OrderBy(x=>x.Date).ThenBy(x=>x.StartHour).ToList();
+
+                for(int j=0; j<pitches[i].PitchAvability.Count(); j++)
+                {
+                    if (myReservation.Any(x => x.PitchAvailabilityId == pitches[i].PitchAvability[j].Id && !x.IsArchived))
+                        pitches[i].PitchAvability[j].IsBookedByMy = true;
+                    else
+                        pitches[i].PitchAvability[j].IsBookedByMy = false;
+                }
             }
 
             return pitches;
@@ -185,6 +195,29 @@ namespace PlayFootballApp.BusinessLogic.Services
                 UserId = userId,
                 ReservedSpots = spots
             });
+
+            _context.SaveChanges();
+
+            return true;
+        }
+
+        public bool ResignSpot(Guid avabilityId, Guid userId)
+        {
+            var avability = _context.PitchAvailability.Where(x => x.Id == avabilityId).FirstOrDefault();
+
+            if (avability == null)
+                return false;
+
+            var pitch = _context.Pitch.Where(x => x.Id == avability.PitchId).First();
+            var reservation = _context.Reservation.Where(x => x.PitchAvailabilityId == avabilityId && x.UserId == userId).FirstOrDefault();
+
+            if (reservation == null)
+                return false;
+
+            reservation.IsArchived = true;
+            reservation.CancelDate = DateTime.Now;
+
+            avability.ReservedPlaces -= reservation.ReservedSpots;
 
             _context.SaveChanges();
 
