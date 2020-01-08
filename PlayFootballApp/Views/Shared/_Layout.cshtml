@@ -48,6 +48,9 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="Index">Panel administratora</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="FindEvents">Znajdź wydarzenia</a>
+                        </li>
                         @await Html.PartialAsync("_LoginPartial")
                     </ul>
                 </div>
@@ -61,11 +64,11 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
+    @*<footer class="border-top footer text-muted">
         <div class="container">
             &copy; 2020 - PlayFootballApp
         </div>
-    </footer>
+    </footer>*@
 
     <environment include="Development">
         <script src="~/lib/jquery/dist/jquery.js"></script>

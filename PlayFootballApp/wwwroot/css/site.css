@@ -66,6 +66,10 @@ body {
     height: 300px;
 }
 
+.big-map{
+    height: 500px;
+}
+
 .leaflet-control {
     display: none;
 }

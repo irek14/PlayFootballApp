@@ -6,12 +6,15 @@
 
 <h1>Znalezione wyniki</h1>
 
+<div class="col-12 row">
+    <div class="col-12 big-map" id="big-map"></div>
+</div>
 @foreach (var pitch in Model)
 {
     <table id="HoursTable" class="table table-striped table-dark mt-3 col-12">
         <thead class="col-12">
             <tr class="col-12">
-                <th class="col-8" scope="col">@pitch.PitchName</th>
+                <th id="pitchName_@pitch.Order" class="col-8" scope="col">@pitch.PitchName</th>
                 <th class="col-2" scope="col">Liczba miejsc: @pitch.Spot</th>
                 <th class="col-2" scope="col">
                     <button id="showButton_@pitch.PitchId" onclick="ExpandPanel('@pitch.PitchId',@pitch.Order)" type="button" class="btn btn-success">
@@ -74,13 +77,13 @@
                                     <td>
                                         @if (avability.IsBookedByMy)
                                         {
-                                            <button onclick="Resign('@avability.Id','@avability.PitchId')" type="button" class="btn btn-danger">
+                                            <button onclick="Resign('@avability.Id')" type="button" class="btn btn-danger">
                                                 <i class="fa fa-ban"></i> Zrezygnuj
                                             </button>
                                         }
                                         else
                                         {
-                                            <button onclick="Reserve('@avability.Id')" type="button" class="btn btn-success">
+                                            <button onclick="Reserve('@avability.Id','@avability.PitchId')" type="button" class="btn btn-success">
                                                 <i class="fa fa-check-circle"></i> Zarezerwuj
                                             </button>
                                         }
@@ -101,6 +104,31 @@
     mapsPlaceholder = new Array(@Model.Count());
     markers = [];
 
+    $(document).ready(function () {
+        var mymap = L.map('big-map').setView([52.222, 21.007], 10);
+
+        L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+            maxZoom: 18,
+            id: 'mapbox.streets',
+            accessToken: 'pk.eyJ1IjoiaXJla2lzIiwiYSI6ImNrMnAyNmZhdjAyc2gzbXBsczJwMmlrNWgifQ.YUpHsfR2Kyp-K8cJD6rRHw'
+        }).addTo(mymap);
+
+        for (var i = 0; i <@Model.Count(); i++) {
+            var localisation = $("#localisation_" + i).val();
+            var name = $("#pitchName_" + i).text();
+            console.log(name);
+        
+            var coordinates = localisation.split(";");
+            coordinates[0] = coordinates[0].replace(",", ".");
+            coordinates[1] = coordinates[1].replace(",", ".");
+            var latlng = L.latLng(coordinates[0], coordinates[1]);
+
+            var marker = L.marker(latlng).addTo(mymap);
+            marker.bindPopup(name).openPopup();
+        }
+    });
+
     function ExpandPanel(id, mapNumber) {
         document.getElementById("panel_" + id).style.display = "block";
         document.getElementById("showButton_" + id).style.display = "none";
@@ -116,6 +144,11 @@
     }
 
     function Reserve(id, pitchId) {
+        debugger;
+        console.log(pitchId);
+        var name = "#SpotNumber_" + pitchId;
+        console.log(name);
+        var dupa = $(name).val();
         var spots = $("#SpotNumber_" + pitchId).val();
 
         var form = new FormData();
@@ -125,7 +158,7 @@
         var settings = {
           "async": true,
           "crossDomain": true,
-          "url": "Home/Reserve",
+          "url": "../Home/Reserve",
           "method": "POST",
           "headers": {
             "cache-control": "no-cache",
@@ -138,7 +171,7 @@
 
         $.ajax(settings).done(function (response) {
             if (JSON.parse(response) == "Ok") {
-                window.location = "Home/Index"
+                window.location = "../Home/Index"
             }
             else if (JSON.parse(response) == "Error") {
                 alert("Coś poszło nie tak");
