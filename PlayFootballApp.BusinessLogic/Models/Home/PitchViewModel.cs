@@ -13,5 +13,8 @@ namespace PlayFootballApp.BusinessLogic.Models.Home
         [Display(Name = "Liczba miejsc")]
         public int Spot { get; set; }
         public List<PitchAvabilityViewModel> PitchAvability { get; set; }
+        public int Order { get; set; }
+        public decimal LocalisationX { get; set; }
+        public decimal LocalisationY { get; set; }
     }
 }

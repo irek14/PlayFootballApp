@@ -114,15 +114,22 @@ namespace PlayFootballApp.BusinessLogic.Services
                     PitchName = x.Pitch.Name,
                     Spot = (int)x.Pitch.SpotNumber,
                     ReservedSpot = x.ReservedPlaces,
-                    FreeSpot = (int)x.Pitch.SpotNumber - x.ReservedPlaces
+                    FreeSpot = (int)x.Pitch.SpotNumber - x.ReservedPlaces,
+                    LocalisationX = x.Pitch.LocalisationX,
+                    LocalisationY = x.Pitch.LocalisationY
                 });
 
             var pitches = avability.Select(x => new PitchViewModel()
             {
                 PitchId = x.PitchId,
                 PitchName = x.PitchName,
-                Spot = x.Spot
+                Spot = x.Spot,
+                LocalisationX = x.LocalisationX,
+                LocalisationY = x.LocalisationY
             }).Distinct().ToList();
+
+            for(int i=0; i<pitches.Count(); i++)
+                pitches[i].Order = i;
 
             var myReservation = _context.Reservation.Where(x => x.UserId == userId);
 

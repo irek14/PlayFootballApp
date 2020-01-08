@@ -25,5 +25,7 @@ namespace PlayFootballApp.BusinessLogic.Models.Home
         public int FreeSpot { get; set; }
 
         public bool IsBookedByMy { get; set; }
+        public decimal LocalisationX { get; set; }
+        public decimal LocalisationY { get; set; }
     }
 }
