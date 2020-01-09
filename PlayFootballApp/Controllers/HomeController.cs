@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PlayFootballApp.BusinessLogic.Interfaces;
+using PlayFootballApp.BusinessLogic.Models.Home;
 using PlayFootballApp.Models;
 
 namespace PlayFootballApp.Controllers
@@ -19,16 +20,29 @@ namespace PlayFootballApp.Controllers
             _pitchService = pitchService;
         }
 
+        [HttpGet]
         public IActionResult Index()
         {
-            return View();
+            return View(new SearchPitchViewModel() {StartDate = DateTime.Now, EndDate = DateTime.Now });
+        }
+
+        [HttpPost]
+        public IActionResult Index(SearchPitchViewModel search)
+        {
+            if (ModelState.IsValid)
+            {
+                return RedirectToAction("FindEvents", "Home", search);
+                //return FindEvents(search);
+            }
+
+            return View(search);
         }
 
         [Authorize]
-        public IActionResult FindEvents()
+        public IActionResult FindEvents(SearchPitchViewModel search)
         {
             var userId = Guid.Parse(User.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value);
-            return View(_pitchService.GetPitchAvability(userId));
+            return View(_pitchService.GetPitchAvability(userId, search.StartDate, search.EndDate, search.SpotNumber, search.LocalisationX, search.LocalisationY));
         }
 
         [HttpPost]

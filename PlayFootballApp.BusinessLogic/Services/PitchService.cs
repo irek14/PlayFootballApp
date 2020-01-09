@@ -101,9 +101,10 @@ namespace PlayFootballApp.BusinessLogic.Services
                     }).ToList();
         }
 
-        public List<PitchViewModel> GetPitchAvability(Guid userId)
+        public List<PitchViewModel> GetPitchAvability(Guid userId, DateTime startDate, DateTime endDate, int spotNumber, decimal localisationX, decimal localisationY)
         {
             var avability = _context.PitchAvailability.Include(x => x.Pitch).Include(x => x.PitchOpenHours)
+                .Where(x => x.OpenDate >= startDate && x.OpenDate <= endDate && (int)x.Pitch.SpotNumber - x.ReservedPlaces >= spotNumber)
                 .Select(x => new PitchAvabilityViewModel()
                 {
                     Id = x.Id,
