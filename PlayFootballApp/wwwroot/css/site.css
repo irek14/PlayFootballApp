@@ -66,6 +66,10 @@ body {
     height: 300px;
 }
 
+.medium-map{
+    height:400px;
+}
+
 .big-map{
     height: 500px;
 }
