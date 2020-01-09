@@ -4,101 +4,110 @@
     ViewData["Title"] = "Wydarzenia";
 }
 
-<h1>Znalezione wyniki</h1>
-
-<div class="col-12 row">
-    <div class="col-12 big-map" id="big-map"></div>
-</div>
-@foreach (var pitch in Model)
+@if (Model.Count() != 0)
 {
-    <table id="HoursTable" class="table table-striped table-dark mt-3 col-12">
-        <thead class="col-12">
-            <tr class="col-12">
-                <th id="pitchName_@pitch.Order" class="col-8" scope="col">@pitch.PitchName</th>
-                <th class="col-2" scope="col">Liczba miejsc: @pitch.Spot</th>
-                <th class="col-2" scope="col">
-                    <button id="showButton_@pitch.PitchId" onclick="ExpandPanel('@pitch.PitchId',@pitch.Order)" type="button" class="btn btn-success">
-                        Pokaż szczegóły <i class="fa fa-arrow-circle-down"></i>
-                    </button>
-                    <button style="display:none" id="hideButton_@pitch.PitchId" onclick="HidePanel('@pitch.PitchId')" type="button" class="btn btn-danger">
-                        Ukryj <i class="fa fa-arrow-circle-up"></i>
-                    </button>
-                </th>
-            </tr>
-        </thead>
-    </table>
-    <div id="panel_@pitch.PitchId" class="col-12" style="display:none">
-        <div class="m-0 row col-12">
-            <div class="col-5">
-                <input class="localisation" id="localisation_@pitch.Order" type="hidden" value="@pitch.LocalisationX;@pitch.LocalisationY"/>
-                <div class="small-map" id="smallMap_@pitch.Order"></div>
-            </div>
-            <div class="col-7">
-                <div class="col-12 row">
-                    <div class="col-12 row">
-                        <button class="btn btn-primary col-3" id="CheckRouteButton" type="button">
-                            <i class="fa fa-map-marked"></i> Wyznacz trasę
+    <h1>Znalezione wyniki</h1>
+
+    <div class="col-12 row">
+        <div class="col-12 big-map" id="big-map"></div>
+    </div>
+    @foreach (var pitch in Model)
+    {
+        <table id="HoursTable" class="table table-striped table-dark mt-3 col-12">
+            <thead class="col-12">
+                <tr class="col-12">
+                    <th id="pitchName_@pitch.Order" class="col-8" scope="col">@pitch.PitchName</th>
+                    <th class="col-2" scope="col">Liczba miejsc: @pitch.Spot</th>
+                    <th class="col-2" scope="col">
+                        <button id="showButton_@pitch.PitchId" onclick="ExpandPanel('@pitch.PitchId',@pitch.Order)" type="button" class="btn btn-success">
+                            Pokaż szczegóły <i class="fa fa-arrow-circle-down"></i>
                         </button>
-                        <div class="col-6 row" style="text-align:right">
-                            <label class="col-9 col-form-label">Liczba miejsc:</label>
-                            <input id="SpotNumber_@pitch.PitchId" type="number" class="col-3 form-control" value="1" min="1" max="@pitch.Spot" />
-                        </div>
-                    </div>
-                    <table id="HoursTable" class="table col-12 m-1">
-                        <thead class="col-12">
-                            <tr class="col-12">
-                                <th class="col-3" scope="col">Data</th>
-                                <th class="col-2" scope="col">Godzina rozpoczęcia</th>
-                                <th class="col-2" scope="col">Godzina zakończenia</th>
-                                <th class="col-1" scope="col">Zarezerwowane miejsca</th>
-                                <th class="col-1" scope="col">Wolne miejsca</th>
-                                <th class="col-3" scope="col"></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var avability in pitch.PitchAvability)
-                            {
-                                <tr>
-                                    <td>
-                                        @avability.Date.ToShortDateString()
-                                    </td>
-                                    <td>
-                                        @avability.StartHour
-                                    </td>
-                                    <td>
-                                        @avability.EndHour
-                                    </td>
-                                    <td>
-                                        @avability.ReservedSpot
-                                    </td>
-                                    <td>
-                                        @avability.FreeSpot
-                                    </td>
-                                    <td>
-                                        @if (avability.IsBookedByMy)
-                                        {
-                                            <button onclick="Resign('@avability.Id')" type="button" class="btn btn-danger">
-                                                <i class="fa fa-ban"></i> Zrezygnuj
-                                            </button>
-                                        }
-                                        else
-                                        {
-                                            <button onclick="Reserve('@avability.Id','@avability.PitchId')" type="button" class="btn btn-success">
-                                                <i class="fa fa-check-circle"></i> Zarezerwuj
-                                            </button>
-                                        }
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
+                        <button style="display:none" id="hideButton_@pitch.PitchId" onclick="HidePanel('@pitch.PitchId')" type="button" class="btn btn-danger">
+                            Ukryj <i class="fa fa-arrow-circle-up"></i>
+                        </button>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+        <div id="panel_@pitch.PitchId" class="col-12" style="display:none">
+            <div class="m-0 row col-12">
+                <div class="col-5">
+                    <input class="localisation" id="localisation_@pitch.Order" type="hidden" value="@pitch.LocalisationX;@pitch.LocalisationY" />
+                    <div class="small-map" id="smallMap_@pitch.Order"></div>
                 </div>
+                <div class="col-7">
+                    <div class="col-12 row">
+                        <div class="col-12 row">
+                            <button class="btn btn-primary col-3" id="CheckRouteButton" type="button">
+                                <i class="fa fa-map-marked"></i> Wyznacz trasę
+                            </button>
+                            <div class="col-6 row" style="text-align:right">
+                                <label class="col-9 col-form-label">Liczba miejsc:</label>
+                                <input id="SpotNumber_@pitch.PitchId" type="number" class="col-3 form-control" value="1" min="1" max="@pitch.Spot" />
+                            </div>
+                        </div>
+                        <table id="HoursTable" class="table col-12 m-1">
+                            <thead class="col-12">
+                                <tr class="col-12">
+                                    <th class="col-3" scope="col">Data</th>
+                                    <th class="col-2" scope="col">Godzina rozpoczęcia</th>
+                                    <th class="col-2" scope="col">Godzina zakończenia</th>
+                                    <th class="col-1" scope="col">Zarezerwowane miejsca</th>
+                                    <th class="col-1" scope="col">Wolne miejsca</th>
+                                    <th class="col-3" scope="col"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var avability in pitch.PitchAvability)
+                                {
+                                    <tr>
+                                        <td>
+                                            @avability.Date.ToShortDateString()
+                                        </td>
+                                        <td>
+                                            @avability.StartHour
+                                        </td>
+                                        <td>
+                                            @avability.EndHour
+                                        </td>
+                                        <td>
+                                            @avability.ReservedSpot
+                                        </td>
+                                        <td>
+                                            @avability.FreeSpot
+                                        </td>
+                                        <td>
+                                            @if (avability.IsBookedByMy)
+                                            {
+                                                <button onclick="Resign('@avability.Id')" type="button" class="btn btn-danger">
+                                                    <i class="fa fa-ban"></i> Zrezygnuj
+                                                </button>
+                                            }
+                                            else
+                                            {
+                                                <button onclick="Reserve('@avability.Id','@avability.PitchId')" type="button" class="btn btn-success">
+                                                    <i class="fa fa-check-circle"></i> Zarezerwuj
+                                                </button>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
             </div>
 
         </div>
-
-    </div>
+    }
 }
+else
+{
+    <h1>Nie znaleziono żadnych wyników</h1>
+    <a class="btn btn-primary" asp-action="Index" asp-controller="Home"><i class="fa fa-sync"></i> Zmień parametry wyszukiwania</a>
+}
+
 
 <script>
     mapsPlaceholder = new Array(@Model.Count());
@@ -118,7 +127,7 @@
             var localisation = $("#localisation_" + i).val();
             var name = $("#pitchName_" + i).text();
             console.log(name);
-        
+
             var coordinates = localisation.split(";");
             coordinates[0] = coordinates[0].replace(",", ".");
             coordinates[1] = coordinates[1].replace(",", ".");
@@ -216,14 +225,14 @@
             return;
 
         var localisation = $("#localisation_" + mapNumber).val();
-        
+
         var coordinates = localisation.split(";");
         coordinates[0] = coordinates[0].replace(",", ".");
         coordinates[1] = coordinates[1].replace(",", ".");
         var latlng = L.latLng(coordinates[0], coordinates[1]);
 
         var mymap = L.map('smallMap_' + mapNumber).setView(latlng, 15);
-        
+
         L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
             attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
             maxZoom: 18,

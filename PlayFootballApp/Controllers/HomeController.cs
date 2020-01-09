@@ -42,7 +42,17 @@ namespace PlayFootballApp.Controllers
         public IActionResult FindEvents(SearchPitchViewModel search)
         {
             var userId = Guid.Parse(User.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value);
-            return View(_pitchService.GetPitchAvability(userId, search.StartDate, search.EndDate, search.SpotNumber, search.LocalisationX, search.LocalisationY));
+
+            int distanceInMeters = int.MaxValue;
+
+            if(search.LocalisationX != 0 && search.LocalisationY != 0)
+            {
+                search.Distance = search.Distance.Replace(".", ",");
+                double distanceInKm = double.Parse(search.Distance);
+                distanceInMeters = (int)(distanceInKm * 1000);
+            }
+
+            return View(_pitchService.GetPitchAvability(userId, search.StartDate, search.EndDate, search.SpotNumber, search.LocalisationX, search.LocalisationY, distanceInMeters));
         }
 
         [HttpPost]

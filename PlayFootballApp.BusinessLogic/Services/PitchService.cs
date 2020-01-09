@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using PlayFootballApp.BusinessLogic.Models.Home;
+using System.Device.Location;
 
 namespace PlayFootballApp.BusinessLogic.Services
 {
@@ -101,7 +102,7 @@ namespace PlayFootballApp.BusinessLogic.Services
                     }).ToList();
         }
 
-        public List<PitchViewModel> GetPitchAvability(Guid userId, DateTime startDate, DateTime endDate, int spotNumber, decimal localisationX, decimal localisationY)
+        public List<PitchViewModel> GetPitchAvability(Guid userId, DateTime startDate, DateTime endDate, int spotNumber, decimal localisationX, decimal localisationY, int distanceInMeters)
         {
             var avability = _context.PitchAvailability.Include(x => x.Pitch).Include(x => x.PitchOpenHours)
                 .Where(x => x.OpenDate >= startDate && x.OpenDate <= endDate && (int)x.Pitch.SpotNumber - x.ReservedPlaces >= spotNumber)
@@ -128,6 +129,21 @@ namespace PlayFootballApp.BusinessLogic.Services
                 LocalisationX = x.LocalisationX,
                 LocalisationY = x.LocalisationY
             }).Distinct().ToList();
+
+            List<int> toDelete = new List<int>();
+            for(int i=0; i<pitches.Count(); i++)
+            {
+                var sCoord = new GeoCoordinate((double)pitches[i].LocalisationX, (double)pitches[i].LocalisationY);
+                var eCoord = new GeoCoordinate((double)localisationX, (double)localisationY);
+
+                var currentDist = sCoord.GetDistanceTo(eCoord);
+
+                if (currentDist > distanceInMeters)
+                    toDelete.Add(i);
+            }
+
+            for(int i=toDelete.Count()-1; i>=0; i--)
+                pitches.RemoveAt(toDelete[i]);
 
             for(int i=0; i<pitches.Count(); i++)
                 pitches[i].Order = i;
