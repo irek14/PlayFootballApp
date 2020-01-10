@@ -32,7 +32,6 @@ namespace PlayFootballApp.Controllers
             if (ModelState.IsValid)
             {
                 return RedirectToAction("FindEvents", "Home", search);
-                //return FindEvents(search);
             }
 
             return View(search);
@@ -52,7 +51,10 @@ namespace PlayFootballApp.Controllers
                 distanceInMeters = (int)(distanceInKm * 1000);
             }
 
-            return View(_pitchService.GetPitchAvability(userId, search.StartDate, search.EndDate, search.SpotNumber, search.LocalisationX, search.LocalisationY, distanceInMeters));
+            var result = _pitchService.GetPitchAvability(userId, search.StartDate, search.EndDate, search.SpotNumber, search.LocalisationX, search.LocalisationY, distanceInMeters);
+            result.Search = search;
+
+            return View(result);
         }
 
         [HttpPost]

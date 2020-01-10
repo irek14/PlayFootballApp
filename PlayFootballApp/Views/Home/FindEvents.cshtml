@@ -1,17 +1,67 @@
-﻿@model IEnumerable<PlayFootballApp.BusinessLogic.Models.Home.PitchViewModel>
+﻿@model PlayFootballApp.BusinessLogic.Models.Home.FindEventsViewModel
 
 @{
     ViewData["Title"] = "Wydarzenia";
 }
 
-@if (Model.Count() != 0)
+@if (Model.Pitches.Count() != 0)
 {
-    <h1>Znalezione wyniki</h1>
+    <button class="btn btn-primary" type="button" data-toggle="collapse" data-target=".multi-collapse" aria-expanded="false" aria-controls="filtersCollapse mapCollapse"><i class="fa fa-arrow-circle-down"></i> Opcje</button>
+    <div class="row">
+        <div class="col">
+            <div class="collapse multi-collapse" id="filtersCollapse">
+                <div class="card card-body">
+                    <div class="form-group col-md-12 row">
+                        <label class="control-label">Szukana liczba miejsc</label>
+                        <input type="number" asp-for="Search.SpotNumber" value="1" min="1" disabled class="form-control" />
+                    </div>
+                    <div class="form-group col-md-12 row">
+                        <label class="control-label">Od</label>
+                        <input id="startDate" asp-for="Search.StartDate" type="date" disabled class="form-control" />
+                    </div>
+                    <div class="form-group col-md-12 row">
+                        <label class="control-label">Do:</label>
+                        <input id="endDate" asp-for="Search.EndDate" type="date" disabled class="form-control" />
+                    </div>
+                    <a asp-controller="Home" asp-action="Index" class="btn btn-warning pull-right col-3">Zmień parametry</a>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="collapse multi-collapse" id="mapCollapse">
+                <div class="card card-body">
+                    <input id="localisationX" type="hidden" asp-for="Search.LocalisationX" />
+                    <input id="localisationY" type="hidden" asp-for="Search.LocalisationY" />
+                    <div class="row col-12">
+                        <div class="col-4">
+                            <h5>Wyznacz trasę do najbliśzego boiska</h5>
+                        </div>
+                        <div class="col-6 row">
+                        </div>
+                        <div class="col-2">
+                            <button type="button" class="btn btn-success">Zastosuj</button>
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="row col-12">
+                        <div class="col-4">
+                            <h5>Wyznacz trasę do wszystkich boisk</h5>
+                        </div>
+                        <div class="col-6 row">
+                        </div>
+                        <div class="col-2">
+                            <button type="button" class="btn btn-info">Zastosuj</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <div class="col-12 row">
+    <div class="col-12 row mt-2">
         <div class="col-12 big-map" id="big-map"></div>
     </div>
-    @foreach (var pitch in Model)
+    @foreach (var pitch in Model.Pitches)
     {
         <table id="HoursTable" class="table table-striped table-dark mt-3 col-12">
             <thead class="col-12">
@@ -110,8 +160,8 @@ else
 
 
 <script>
-    mapsPlaceholder = new Array(@Model.Count());
-    markers = [];
+    var mapsPlaceholder = new Array(@Model.Pitches.Count());
+    var markers = [];
 
     $(document).ready(function () {
         var mymap = L.map('big-map').setView([52.222, 21.007], 10);
@@ -123,7 +173,7 @@ else
             accessToken: 'pk.eyJ1IjoiaXJla2lzIiwiYSI6ImNrMnAyNmZhdjAyc2gzbXBsczJwMmlrNWgifQ.YUpHsfR2Kyp-K8cJD6rRHw'
         }).addTo(mymap);
 
-        for (var i = 0; i <@Model.Count(); i++) {
+        for (var i = 0; i <@Model.Pitches.Count(); i++) {
             var localisation = $("#localisation_" + i).val();
             var name = $("#pitchName_" + i).text();
             console.log(name);
@@ -134,7 +184,27 @@ else
             var latlng = L.latLng(coordinates[0], coordinates[1]);
 
             var marker = L.marker(latlng).addTo(mymap);
-            marker.bindPopup(name).openPopup();
+            marker.bindPopup(name).addTo(mymap);
+        }
+      
+        if ($("#localisationX").val() != 0 && $("#localisationY").val() != 0) {
+            var locX = $("#localisationX").val() + "";
+            var locY = $("#localisationY").val() + "";
+            locX = locX.replace(",", ".");
+            locY = locY.replace(",", ".");
+            var latlng = L.latLng(locX, locY);
+
+            var redIcon = new L.Icon({
+                iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                iconSize: [25, 41],
+                iconAnchor: [12, 41],
+                popupAnchor: [1, -34],
+                shadowSize: [41, 41]
+            });
+
+            var marker = L.marker(latlng, { icon: redIcon }).addTo(mymap);   
+            marker.bindPopup("Twoja lokalizacja").openPopup();
         }
     });
 

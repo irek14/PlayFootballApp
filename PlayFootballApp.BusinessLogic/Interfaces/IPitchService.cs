@@ -14,7 +14,7 @@ namespace PlayFootballApp.BusinessLogic.Interfaces
         Task UpdatePitch(PitchCreateViewModel pitch);
         List<TablePitchViewModel> GetAllPitches();
         void DeletePitch(Guid pitchId);
-        List<PitchViewModel> GetPitchAvability(Guid userId, DateTime startDate, DateTime endDate, int spotNumber, decimal localisationX, decimal localisationY, int distanceInMeters);
+        FindEventsViewModel GetPitchAvability(Guid userId, DateTime startDate, DateTime endDate, int spotNumber, decimal localisationX, decimal localisationY, int distanceInMeters);
         bool ReserveSpot(Guid avabilityId, int spots, Guid userId);
         bool ResignSpot(Guid avabilityId, Guid userId);
     }

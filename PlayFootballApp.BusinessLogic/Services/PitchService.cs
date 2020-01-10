@@ -102,7 +102,7 @@ namespace PlayFootballApp.BusinessLogic.Services
                     }).ToList();
         }
 
-        public List<PitchViewModel> GetPitchAvability(Guid userId, DateTime startDate, DateTime endDate, int spotNumber, decimal localisationX, decimal localisationY, int distanceInMeters)
+        public FindEventsViewModel GetPitchAvability(Guid userId, DateTime startDate, DateTime endDate, int spotNumber, decimal localisationX, decimal localisationY, int distanceInMeters)
         {
             var avability = _context.PitchAvailability.Include(x => x.Pitch).Include(x => x.PitchOpenHours)
                 .Where(x => x.OpenDate >= startDate && x.OpenDate <= endDate && (int)x.Pitch.SpotNumber - x.ReservedPlaces >= spotNumber)
@@ -163,7 +163,7 @@ namespace PlayFootballApp.BusinessLogic.Services
                 }
             }
 
-            return pitches;
+            return new FindEventsViewModel() {Pitches = pitches };
         }
 
         public PitchCreateViewModel GetPitchWithId(Guid id)
