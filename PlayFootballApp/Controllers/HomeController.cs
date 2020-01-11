@@ -28,7 +28,6 @@ namespace PlayFootballApp.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            _weatherService.GetWeather();
             return View(new SearchPitchViewModel() {StartDate = DateTime.Now, EndDate = DateTime.Now });
         }
 
@@ -64,6 +63,17 @@ namespace PlayFootballApp.Controllers
                 result.ClosestPitch = _mapService.GetClosestPitch(new GeoCoordinate((double)search.LocalisationX, (double)search.LocalisationY), result.Pitches);
 
             return View(result);
+        }
+
+        [HttpGet]
+        public IActionResult GetWeather(Guid id)
+        {
+            var weather = _weatherService.GetWeather(id);
+
+            if (weather != null)
+                return Json(weather);
+
+            return Json("Error");
         }
 
         [HttpPost]
