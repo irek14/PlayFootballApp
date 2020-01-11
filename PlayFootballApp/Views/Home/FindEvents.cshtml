@@ -32,16 +32,17 @@
                 <div class="card card-body">
                     <input id="localisationX" type="hidden" asp-for="Search.LocalisationX" />
                     <input id="localisationY" type="hidden" asp-for="Search.LocalisationY" />
+                    <input id="closestPitch" type="hidden" asp-for="ClosestPitch"/>
                     @if (Model.Search.LocalisationX != 0 && Model.Search.LocalisationY != 0)
                     {
                         <div class="row col-12">
                             <div class="col-4">
-                                <h5>Wyznacz trasę do najbliśzego boiska</h5>
+                                <h5>Wyznacz trasę do najbliszego boiska</h5>
                             </div>
                             <div class="col-6 row">
                             </div>
                             <div class="col-2">
-                                <button type="button" class="btn btn-success">Zastosuj</button>
+                                <button type="button" onclick="RouteToClosest()" class="btn btn-success">Zastosuj</button>
                             </div>
                         </div>
                         <hr />
@@ -60,7 +61,7 @@
                     {
                         <div class="row col-12">
                             <div class="col-4">
-                                <h5>Wyznacz trasę do najbliśzego boiska</h5>
+                                <h5>Wyznacz trasę do najbliszego boiska</h5>
                             </div>
                             <div class="col-6 row">
                             </div>
@@ -419,5 +420,40 @@ else
 
         InitializeMainMap(mymap);
         mainMap = mymap;
+    }
+
+    function RouteToClosest() {
+        var localisation = $("#closestPitch").val();
+
+        var coordinates = localisation.split(", ");
+        var targetlatlng = L.latLng(coordinates[0], coordinates[1]);
+
+        var locX = $("#localisationX").val() + "";
+        var locY = $("#localisationY").val() + "";
+        locX = locX.replace(",", ".");
+        locY = locY.replace(",", ".");
+        var mylatlng = L.latLng(locX, locY);
+
+        var mymap = mainMap;
+        mymap.eachLayer(function (layer) {
+            mymap.removeLayer(layer);
+        });
+
+        L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+            maxZoom: 18,
+            id: 'mapbox.streets',
+            accessToken: 'pk.eyJ1IjoiaXJla2lzIiwiYSI6ImNrMnAyNmZhdjAyc2gzbXBsczJwMmlrNWgifQ.YUpHsfR2Kyp-K8cJD6rRHw'
+        }).addTo(mymap);
+
+        L.Routing.control({
+            waypoints: [mylatlng, targetlatlng],
+            draggableWaypoints: false, 
+            lineOptions: {
+                styles: [{ color: 'red', opacity: 0.8, weight: 6 }]
+            }
+        }).addTo(mymap);
+
+        InitializeMainMap(mymap);
     }
 </script>

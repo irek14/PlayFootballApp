@@ -16,10 +16,12 @@ namespace PlayFootballApp.BusinessLogic.Services
     public class PitchService : IPitchService
     {
         PlayFootballContext _context;
+        private readonly IMapService _mapService;
 
-        public PitchService(PlayFootballContext context)
+        public PitchService(PlayFootballContext context, IMapService mapService)
         {
             _context = context;
+            _mapService = mapService;
         }
 
         public async Task AddPitch(PitchCreateViewModel pitch)
@@ -130,18 +132,7 @@ namespace PlayFootballApp.BusinessLogic.Services
                 LocalisationY = x.LocalisationY
             }).Distinct().ToList();
 
-            List<int> toDelete = new List<int>();
-            for(int i=0; i<pitches.Count(); i++)
-            {
-                var sCoord = new GeoCoordinate((double)pitches[i].LocalisationX, (double)pitches[i].LocalisationY);
-                var eCoord = new GeoCoordinate((double)localisationX, (double)localisationY);
-
-                var currentDist = sCoord.GetDistanceTo(eCoord);
-
-                if (currentDist > distanceInMeters)
-                    toDelete.Add(i);
-            }
-
+            List<int> toDelete = _mapService.GetPitchesFurtherThan(distanceInMeters, pitches, new GeoCoordinate((double)localisationX, (double)localisationY));
             for(int i=toDelete.Count()-1; i>=0; i--)
                 pitches.RemoveAt(toDelete[i]);
 

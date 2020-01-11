@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Device.Location;
 using System.Diagnostics;
 using System.Linq;
 using System.Security.Claims;
@@ -15,9 +16,11 @@ namespace PlayFootballApp.Controllers
     public class HomeController : Controller
     {
         private readonly IPitchService _pitchService;
-        public HomeController(IPitchService pitchService)
+        private readonly IMapService _mapService;
+        public HomeController(IPitchService pitchService, IMapService mapService)
         {
             _pitchService = pitchService;
+            _mapService = mapService;
         }
 
         [HttpGet]
@@ -53,6 +56,9 @@ namespace PlayFootballApp.Controllers
 
             var result = _pitchService.GetPitchAvability(userId, search.StartDate, search.EndDate, search.SpotNumber, search.LocalisationX, search.LocalisationY, distanceInMeters);
             result.Search = search;
+
+            if (distanceInMeters != int.MaxValue)
+                result.ClosestPitch = _mapService.GetClosestPitch(new GeoCoordinate((double)search.LocalisationX, (double)search.LocalisationY), result.Pitches);
 
             return View(result);
         }
