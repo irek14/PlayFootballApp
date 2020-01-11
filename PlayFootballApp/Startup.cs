@@ -45,6 +45,7 @@ namespace PlayFootballApp
             services.AddScoped<IPitchService, PitchService>();
             services.AddScoped<IAdminService, AdminService>();
             services.AddScoped<IMapService, MapService>();
+            services.AddScoped<IWeatherService, WeatherService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

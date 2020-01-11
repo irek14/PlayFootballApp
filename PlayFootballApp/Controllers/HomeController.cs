@@ -17,15 +17,18 @@ namespace PlayFootballApp.Controllers
     {
         private readonly IPitchService _pitchService;
         private readonly IMapService _mapService;
-        public HomeController(IPitchService pitchService, IMapService mapService)
+        private readonly IWeatherService _weatherService;
+        public HomeController(IPitchService pitchService, IMapService mapService, IWeatherService weatherService)
         {
             _pitchService = pitchService;
             _mapService = mapService;
+            _weatherService = weatherService;
         }
 
         [HttpGet]
         public IActionResult Index()
         {
+            _weatherService.GetWeather();
             return View(new SearchPitchViewModel() {StartDate = DateTime.Now, EndDate = DateTime.Now });
         }
 
