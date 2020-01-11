@@ -52,7 +52,7 @@
                             <div class="col-6 row">
                             </div>
                             <div class="col-2">
-                                <button type="button" class="btn btn-info">Zastosuj</button>
+                                <button onclick="RouteToAll()" type="button" class="btn btn-info">Zastosuj</button>
                             </div>
                         </div>
                     }
@@ -190,6 +190,7 @@ else
 <script>
     var mapsPlaceholder = new Array(@Model.Pitches.Count());
     var markers = [];
+    var mainMap;
 
     $(document).ready(function () {
         var mymap = L.map('big-map').setView([52.222, 21.007], 10);
@@ -201,10 +202,13 @@ else
             accessToken: 'pk.eyJ1IjoiaXJla2lzIiwiYSI6ImNrMnAyNmZhdjAyc2gzbXBsczJwMmlrNWgifQ.YUpHsfR2Kyp-K8cJD6rRHw'
         }).addTo(mymap);
 
+        InitializeMainMap(mymap);
+    });
+
+    function InitializeMainMap(mymap) {
         for (var i = 0; i <@Model.Pitches.Count(); i++) {
             var localisation = $("#localisation_" + i).val();
             var name = $("#pitchName_" + i).text();
-            console.log(name);
 
             var coordinates = localisation.split(";");
             coordinates[0] = coordinates[0].replace(",", ".");
@@ -233,8 +237,10 @@ else
 
             var marker = L.marker(latlng, { icon: redIcon }).addTo(mymap);   
             marker.bindPopup("Twoja lokalizacja").openPopup();
+
+            mainMap = mymap;
         }
-    });
+    }
 
     function ExpandPanel(id, mapNumber) {
         document.getElementById("panel_" + id).style.display = "block";
@@ -382,5 +388,36 @@ else
         L.marker(mylatlng, { icon: redIcon }).addTo(mymap); 
 
         mapsPlaceholder[order] = mymap;
+    }
+
+    function RouteToAll() {
+        var colors = ['green', 'blue', 'fuchsia', 'yellow', 'maroon', 'lime', 'aqua', 'purple', 'olive', 'red', 'teal'];
+
+        var mymap = mainMap;
+        var locX = $("#localisationX").val() + "";
+        var locY = $("#localisationY").val() + "";
+        locX = locX.replace(",", ".");
+        locY = locY.replace(",", ".");
+        var mylatlng = L.latLng(locX, locY);
+
+        for (var i = 0; i <@Model.Pitches.Count(); i++) {
+            var localisation = $("#localisation_" + i).val();
+
+            var coordinates = localisation.split(";");
+            coordinates[0] = coordinates[0].replace(",", ".");
+            coordinates[1] = coordinates[1].replace(",", ".");
+            var targetlatlng = L.latLng(coordinates[0], coordinates[1]);
+
+            L.Routing.control({
+                waypoints: [mylatlng, targetlatlng],
+                draggableWaypoints: false, 
+                lineOptions: {
+                    styles: [{ color: colors[i % colors.length], opacity: 0.8, weight: 6 }]
+                }
+            }).addTo(mymap);
+        }
+
+        InitializeMainMap(mymap);
+        mainMap = mymap;
     }
 </script>
