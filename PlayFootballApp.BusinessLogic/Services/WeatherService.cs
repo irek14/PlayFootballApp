@@ -51,8 +51,9 @@ namespace PlayFootballApp.BusinessLogic.Services
                     Humidity = root.list[i].main.humidity,
                     Pressure = root.list[i].main.pressure,
                     Temperature = root.list[i].main.temp,
-                    SensedTemperature = Math.Round((root.list[i].main.temp + root.list[i].main.feels_like),2),
-                    WindSpeed = root.list[i].wind.speed
+                    SensedTemperature = Math.Round((root.list[i].main.temp + root.list[i].main.feels_like), 2),
+                    WindSpeed = root.list[i].wind.speed,
+                    Description = root.list[i].weather.First().description
                 };
             }
             else

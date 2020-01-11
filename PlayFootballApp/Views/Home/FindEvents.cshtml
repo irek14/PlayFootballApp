@@ -168,6 +168,7 @@
                                                     <i class="fa fa-check-circle"></i> Zarezerwuj
                                                 </button>
                                             }
+                                            <button onclick="GetWeather('@avability.Id')" class="btn btn-info mt-2" type="button"><i class="fa fa-cloud"></i> Sprawdź pogodę</button>
                                         </td>
                                     </tr>
                                 }
@@ -258,11 +259,7 @@ else
     }
 
     function Reserve(id, pitchId) {
-        debugger;
-        console.log(pitchId);
         var name = "#SpotNumber_" + pitchId;
-        console.log(name);
-        var dupa = $(name).val();
         var spots = $("#SpotNumber_" + pitchId).val();
 
         var form = new FormData();
@@ -455,5 +452,27 @@ else
         }).addTo(mymap);
 
         InitializeMainMap(mymap);
+    }
+</script>
+
+<script>
+    function GetWeather(id) {
+
+        var settings = {
+          "async": true,
+          "crossDomain": true,
+          "url": "../Home/GetWeather/" + id,
+          "method": "GET",
+          "headers": {
+            "cache-control": "no-cache",
+          },
+          "processData": false,
+          "contentType": false,
+          "mimeType": "multipart/form-data",
+        }
+
+        $.ajax(settings).done(function (response) {
+            console.log(response);
+        });
     }
 </script>
