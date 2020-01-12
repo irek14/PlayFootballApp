@@ -32,7 +32,7 @@
                 <div class="card card-body">
                     <input id="localisationX" type="hidden" asp-for="Search.LocalisationX" />
                     <input id="localisationY" type="hidden" asp-for="Search.LocalisationY" />
-                    <input id="closestPitch" type="hidden" asp-for="ClosestPitch"/>
+                    <input id="closestPitch" type="hidden" asp-for="ClosestPitch" />
                     @if (Model.Search.LocalisationX != 0 && Model.Search.LocalisationY != 0)
                     {
                         <div class="row col-12">
@@ -187,6 +187,47 @@ else
     <h1>Nie znaleziono żadnych wyników</h1>
     <a class="btn btn-primary" asp-action="Index" asp-controller="Home"><i class="fa fa-sync"></i> Zmień parametry wyszukiwania</a>
 }
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+    Launch demo modal
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="weatherModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="weatherDescription"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group col-md-12 row">
+                    <label class="col-3 label-success">Temperatura</label>
+                    <label class="col-9" id="weatherTemperature"></label>
+                </div>
+                <div class="form-group col-md-12 row">
+                    <label class="col-3 label-danger">Odczuwalna temperatura</label>
+                    <label class="col-9" id="weatherSensedTemperature"></label>
+                </div>
+                <hr />
+                <div class="form-group col-md-12 row">
+                    <label class="col-3 label-success">Ciśnienie</label>
+                    <label class="col-9" id="weatherPressure"></label>
+                </div>
+                <div class="form-group col-md-12 row">
+                    <label class="col-3 label-success">Wilgotność</label>
+                    <label class="col-9" id="weatherHumidity">24 C</label>
+                </div>
+                <div class="form-group col-md-12 row">
+                    <label class="col-3 label-danger">Prędkość wiatru</label>
+                    <label class="col-9" id="weatherWindSpeed"></label>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 <script>
@@ -220,7 +261,7 @@ else
             var marker = L.marker(latlng).addTo(mymap);
             marker.bindPopup(name).addTo(mymap);
         }
-      
+
         if ($("#localisationX").val() != 0 && $("#localisationY").val() != 0) {
             var locX = $("#localisationX").val() + "";
             var locY = $("#localisationY").val() + "";
@@ -237,7 +278,7 @@ else
                 shadowSize: [41, 41]
             });
 
-            var marker = L.marker(latlng, { icon: redIcon }).addTo(mymap);   
+            var marker = L.marker(latlng, { icon: redIcon }).addTo(mymap);
             marker.bindPopup("Twoja lokalizacja").openPopup();
 
             mainMap = mymap;
@@ -368,7 +409,7 @@ else
 
         L.Routing.control({
             waypoints: [mylatlng, targetlatlng],
-            draggableWaypoints: false, 
+            draggableWaypoints: false,
             lineOptions: {
                 styles: [{ color: 'green', opacity: 0.8, weight: 6 }]
             }
@@ -383,7 +424,7 @@ else
             shadowSize: [41, 41]
         });
 
-        L.marker(mylatlng, { icon: redIcon }).addTo(mymap); 
+        L.marker(mylatlng, { icon: redIcon }).addTo(mymap);
 
         mapsPlaceholder[order] = mymap;
     }
@@ -408,7 +449,7 @@ else
 
             L.Routing.control({
                 waypoints: [mylatlng, targetlatlng],
-                draggableWaypoints: false, 
+                draggableWaypoints: false,
                 lineOptions: {
                     styles: [{ color: colors[i % colors.length], opacity: 0.8, weight: 6 }]
                 }
@@ -445,7 +486,7 @@ else
 
         L.Routing.control({
             waypoints: [mylatlng, targetlatlng],
-            draggableWaypoints: false, 
+            draggableWaypoints: false,
             lineOptions: {
                 styles: [{ color: 'red', opacity: 0.8, weight: 6 }]
             }
@@ -459,20 +500,31 @@ else
     function GetWeather(id) {
 
         var settings = {
-          "async": true,
-          "crossDomain": true,
-          "url": "../Home/GetWeather/" + id,
-          "method": "GET",
-          "headers": {
-            "cache-control": "no-cache",
-          },
-          "processData": false,
-          "contentType": false,
-          "mimeType": "multipart/form-data",
+            "async": true,
+            "crossDomain": true,
+            "url": "../Home/GetWeather/" + id,
+            "method": "GET",
+            "headers": {
+                "cache-control": "no-cache",
+            },
+            "processData": false,
+            "contentType": false,
+            "mimeType": "multipart/form-data",
         }
 
         $.ajax(settings).done(function (response) {
-            console.log(response);
+            var weather = JSON.parse(response);
+            const name = weather.description;
+            const nameCapitalized = name.charAt(0).toUpperCase() + name.slice(1)
+
+            $("#weatherDescription").text(nameCapitalized);
+            $("#weatherTemperature").text(weather.temperature + " C");
+            $("#weatherSensedTemperature").text(weather.sensedTemperature + " C");
+            $("#weatherPressure").text(weather.pressure + " hPa");
+            $("#weatherHumidity").text(weather.humidity + " %");
+            $("#weatherWindSpeed").text(weather.windSpeed + " km/h");
+
+            $('#weatherModal').modal('toggle');
         });
     }
 </script>
