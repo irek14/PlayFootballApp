@@ -78,6 +78,36 @@ body {
     display: none;
 }
 
+@media (max-width: 992px) {
+    .small-map{
+        display: none;
+    }
+    .small-map-check-route-button{
+        display:none;
+    }
+    html {
+        font-size: 14px;
+    }
+}
+
+.hoursTable{
+    display: block;
+    overflow-x:auto;
+}
+
+.nav-link {
+    color: white !important;
+}
+
+.btn-primary {
+    background-color: #0000be !important;
+    border-color: #0000be !important;
+}
+
+.bg-primary {
+    background-color: #0000be !important;
+}
+
 @media (min-width: 1350px) {
     .container {
         min-width: 1300px;
